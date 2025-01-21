@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import TanstackQueryProvider from "./TanstackQueryProvider";
 import { ThemeProvider } from "./theme-provider";
@@ -5,12 +6,7 @@ import { ThemeProvider } from "./theme-provider";
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <TanstackQueryProvider>
-      <ThemeProvider
-        attribute="class"
-        defaultTheme="system"
-        enableSystem
-        disableTransitionOnChange
-      >
+      <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
         {children}
       </ThemeProvider>
     </TanstackQueryProvider>
