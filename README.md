@@ -4,7 +4,7 @@
 
 - [ ] Initialize Next.js frontend
 - [ ] Initialize NestJS backend with microservices
-- [ ] Set up MongoDB database
+- [ ] Set up MySQL database with Sequelize
 - [ ] Configure Redis for caching
 - [ ] Set up RabbitMQ/Kafka for event-driven architecture
 - [ ] Configure cloud storage (AWS S3/Firebase)
@@ -39,7 +39,7 @@
 
 ## 📊 Admin Panel
 
-- [ ] Create admin dashboard with analytics
+- [ ] Create admin dashboard
 - [ ] Implement user management (CRUD)
 - [ ] Implement product management (CRUD)
 - [ ] Implement order management (Approve, refund)
@@ -48,7 +48,7 @@
 ## 👨‍💼 Seller Panel
 
 - [ ] Develop product management for sellers
-- [ ] Implement sales analytics & earnings dashboard
+- [ ] Implement sales dashboard for sellers
 - [ ] Set up customer messaging system
 - [ ] Implement payout system for sellers
 
