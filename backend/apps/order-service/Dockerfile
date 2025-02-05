@@ -1,12 +1,11 @@
 FROM node:22
 
-WORKDIR /app/backend/order-service
-
-COPY package*.json ./
-
-RUN npm install
+WORKDIR /app
 
 COPY . .
 
-RUN ["npm", "run", "start:dev"]
+RUN npm install
+
+
+
 

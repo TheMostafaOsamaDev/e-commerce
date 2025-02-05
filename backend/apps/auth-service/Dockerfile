@@ -1,12 +1,14 @@
 FROM node:22
 
-WORKDIR /app/backend/notification-service
+# Set the working directory
+WORKDIR /app
 
-COPY package*.json ./
-
-RUN npm install
-
+# Copy the rest of the application code
 COPY . .
 
-RUN ["npm", "run", "start:dev"]
+# Install dependencies first for better caching
+RUN npm install
+
+
+
 

@@ -1,12 +1,11 @@
 FROM node:22
 
-WORKDIR /app/backend/auth-service
-
-COPY package*.json ./
-
-RUN npm install
+WORKDIR /app
 
 COPY . .
 
-RUN ["npm", "run", "start:dev"]
+RUN npm install
+
+
+EXPOSE 8000
 

@@ -1,6 +1,16 @@
-# Docker ignore file
+# Versioning and metadata
+.git
+.gitignore
+.dockerignore
+
+# Build dependencies
+dist.do
 node_modules
-npm-debug.log
-Dockerfile
-docker-compose.yml
-package-lock.json
+
+# Environment (contains sensitive data)
+*.env
+
+# Misc
+.eslintrc.js
+.prettierrc
+README.md

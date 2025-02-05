@@ -1,12 +1,10 @@
 FROM node:22
 
-WORKDIR /app/backend/product-service
-
-COPY package*.json ./
-
-RUN npm install
+# Set the working directory
+WORKDIR /app
 
 COPY . .
 
-RUN ["npm", "run", "start:dev"]
+RUN npm install
+
 
