@@ -3,8 +3,8 @@ services:
     image: rabbitmq:3-management
     container_name: rabbitmq
     ports:
-      - "5672:5672" # RabbitMQ server
-      - "15672:15672" # RabbitMQ management plugin
+      - "5672:5672"
+      - "15672:15672"
     environment:
       - RABBITMQ_DEFAULT_USER=guest
       - RABBITMQ_DEFAULT_PASS=guest
@@ -19,19 +19,92 @@ services:
     environment:
       - NODE_ENV=development
       - DB_HOST=e_commerce_db
-      - RABBITMQ_URL=amqp://guest:guest@e_commerce_backend_rabbitmq:5672
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672
     volumes:
-      - auth_service_data:/app/data
+      - ./apps/auth-service:/app
+      - /app/node_modules
     command: npm run start:dev
     depends_on:
       - rabbitmq
     networks:
       - e_commerce_network
 
+  product-service:
+    build: ./apps/product-service
+    container_name: product_service
+    environment:
+      - NODE_ENV=development
+      - DB_HOST=e_commerce_db
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672
+    volumes:
+      - ./apps/product-service:/app
+      - /app/node_modules
+    command: npm run start:dev
+    depends_on:
+      - rabbitmq
+    networks:
+      - e_commerce_network
+
+  notification-service:
+    build: ./apps/notification-service
+    container_name: notification_service
+    environment:
+      - NODE_ENV=development
+      - DB_HOST=e_commerce_db
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672
+    volumes:
+      - ./apps/notification-service:/app
+      - /app/node_modules
+    command: npm run start:dev
+    depends_on:
+      - rabbitmq
+    networks:
+      - e_commerce_network
+
+  order-service:
+    build: ./apps/order-service
+    container_name: order_service
+    environment:
+      - NODE_ENV=development
+      - DB_HOST=e_commerce_db
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672
+    volumes:
+      - ./apps/order-service:/app
+      - /app/node_modules
+    command: npm run start:dev
+    depends_on:
+      - rabbitmq
+    networks:
+      - e_commerce_network
+
+  api-gateway:
+    build: ./apps/gateway
+    container_name: api_gateway
+    ports:
+      - "8000:8000"
+    environment:
+      - NODE_ENV=development
+      - AUTH_SERVICE_URL=auth-service
+      - PRODUCT_SERVICE_URL=product-service
+      - NOTIFICATION_SERVICE_URL=notification-service
+      - ORDER_SERVICE_URL=order-service
+      - DB_HOST=e_commerce_db
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672
+    volumes:
+      - ./apps/gateway:/app
+      - /app/node_modules
+    command: npm run start:dev
+    depends_on:
+      - auth-service
+      - product-service
+      - notification-service
+      - order-service
+      - rabbitmq
+    networks:
+      - e_commerce_network
+
 volumes:
   rabbitmq_data:
-    driver: local
-  auth_service_data:
     driver: local
 
 networks:
