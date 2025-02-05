@@ -2,11 +2,11 @@
 
 ## 📌 Project Setup
 
-- [ x ] Initialize Next.js frontend
-- [ x ] Initialize NestJS backend with microservices
+- [x] Initialize Next.js frontend
+- [x] Initialize NestJS backend with microservices
 - [ ] Set up MySQL database with Sequelize
 - [ ] Configure Redis for caching
-- [ x ] Set up RabbitMQ/Kafka for event-driven architecture
+- [x] Set up RabbitMQ/Kafka for event-driven architecture
 - [ ] Configure cloud storage (AWS S3/Firebase)
 - [ ] Set up Docker for frontend (Next.js)
 - [ x ] Set up Docker for backend (NestJS & microservices)
