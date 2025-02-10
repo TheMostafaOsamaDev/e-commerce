@@ -9,8 +9,8 @@ async function bootstrap() {
     {
       transport: Transport.RMQ,
       options: {
-        urls: ['amqp://guest:guest@rabbitmq:5672'], // RabbitMQ URL from Docker
-        queue: 'product_queue', // Define a queue
+        urls: [process.env.RABBITMQ_URL!], // RabbitMQ URL from Docker
+        queue: process.env.RABBITMQ_QUEUE!, // Define a queue for auth-service
         queueOptions: {
           durable: false,
         },
