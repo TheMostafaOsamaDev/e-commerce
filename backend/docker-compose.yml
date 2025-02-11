@@ -13,12 +13,32 @@ services:
     networks:
       - e_commerce_network
 
+  e_commerce_db:
+    image: mysql:8
+    container_name: e_commerce_db
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: e_commerce
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - e_commerce_network
+
   auth-service:
     build: ./apps/auth-service
     container_name: auth_service
     environment:
       - NODE_ENV=development
       - DB_HOST=e_commerce_db
+      - DB_PORT=3306
+      - DB_USER=user
+      - DB_PASSWORD=password
+      - DB_NAME=e_commerce
       - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672
     volumes:
       - ./apps/auth-service:/app
@@ -26,6 +46,7 @@ services:
     command: npm run start:dev
     depends_on:
       - rabbitmq
+      - e_commerce_db
     networks:
       - e_commerce_network
 
@@ -35,6 +56,10 @@ services:
     environment:
       - NODE_ENV=development
       - DB_HOST=e_commerce_db
+      - DB_PORT=3306
+      - DB_USER=user
+      - DB_PASSWORD=password
+      - DB_NAME=e_commerce
       - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672
     volumes:
       - ./apps/product-service:/app
@@ -42,6 +67,7 @@ services:
     command: npm run start:dev
     depends_on:
       - rabbitmq
+      - e_commerce_db
     networks:
       - e_commerce_network
 
@@ -51,6 +77,10 @@ services:
     environment:
       - NODE_ENV=development
       - DB_HOST=e_commerce_db
+      - DB_PORT=3306
+      - DB_USER=user
+      - DB_PASSWORD=password
+      - DB_NAME=e_commerce
       - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672
     volumes:
       - ./apps/notification-service:/app
@@ -58,6 +88,7 @@ services:
     command: npm run start:dev
     depends_on:
       - rabbitmq
+      - e_commerce_db
     networks:
       - e_commerce_network
 
@@ -67,6 +98,10 @@ services:
     environment:
       - NODE_ENV=development
       - DB_HOST=e_commerce_db
+      - DB_PORT=3306
+      - DB_USER=user
+      - DB_PASSWORD=password
+      - DB_NAME=e_commerce
       - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672
     volumes:
       - ./apps/order-service:/app
@@ -74,6 +109,7 @@ services:
     command: npm run start:dev
     depends_on:
       - rabbitmq
+      - e_commerce_db
     networks:
       - e_commerce_network
 
@@ -89,6 +125,10 @@ services:
       - NOTIFICATION_SERVICE_URL=notification-service
       - ORDER_SERVICE_URL=order-service
       - DB_HOST=e_commerce_db
+      - DB_PORT=3306
+      - DB_USER=user
+      - DB_PASSWORD=password
+      - DB_NAME=e_commerce
       - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672
     volumes:
       - ./apps/gateway:/app
@@ -100,11 +140,14 @@ services:
       - notification-service
       - order-service
       - rabbitmq
+      - e_commerce_db
     networks:
       - e_commerce_network
 
 volumes:
   rabbitmq_data:
+    driver: local
+  mysql_data:
     driver: local
 
 networks:

@@ -9,7 +9,7 @@ export class AuthController {
     @Inject('AUTH_SERVICE') private readonly authClient: ClientProxy,
   ) {}
 
-  @Post()
+  @Post('sign-up')
   createAccount(data: any) {
     console.log(data);
     this.authClient.send({ cmd: 'create_account' }, data);

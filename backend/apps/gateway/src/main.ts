@@ -9,7 +9,7 @@ async function bootstrap() {
     transport: Transport.RMQ,
     options: {
       urls: [RABBITMQ_URL], // RabbitMQ connection
-      queue: process.env.GATEWAY_QUEUE!, // Gateway queue
+      queue: process.env.GATEWAY_QUEUE! ?? 'gateway_queue', // Gateway queue
       queueOptions: {
         durable: false,
       },

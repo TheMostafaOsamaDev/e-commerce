@@ -9,7 +9,7 @@ async function bootstrap() {
         transport: microservices_1.Transport.RMQ,
         options: {
             urls: [process.env.RABBITMQ_URL],
-            queue: process.env.RABBITMQ_QUEUE,
+            queue: process.env.RABBITMQ_QUEUE ?? 'auth_queue',
             queueOptions: {
                 durable: false,
             },

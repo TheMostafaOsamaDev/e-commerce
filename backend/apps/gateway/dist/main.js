@@ -10,7 +10,7 @@ async function bootstrap() {
         transport: microservices_1.Transport.RMQ,
         options: {
             urls: [config_1.RABBITMQ_URL],
-            queue: process.env.GATEWAY_QUEUE,
+            queue: process.env.GATEWAY_QUEUE ?? 'gateway_queue',
             queueOptions: {
                 durable: false,
             },
