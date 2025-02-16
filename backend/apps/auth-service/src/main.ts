@@ -2,8 +2,14 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { Logger, ValidationPipe } from '@nestjs/common';
+import { sequelize } from './sequelize.config';
 
 async function bootstrap() {
+  await sequelize.authenticate();
+  await sequelize.sync(); // Sync database tables
+
+  Logger.log('Connected to MySQL & Synced Models');
+
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
     AppModule,
     {
