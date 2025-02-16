@@ -1,3 +1,5 @@
+import { CreateAuthDto } from './dto/create-auth.dto';
+import { User } from './user.model';
 export declare class AppService {
-    getHello(): string;
+    createUser(data: CreateAuthDto): Promise<User>;
 }

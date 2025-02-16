@@ -22,7 +22,7 @@ let AppController = class AppController {
         this.appService = appService;
     }
     createAccount(data) {
-        console.log('Received data:', data);
+        return this.appService.createUser(data);
     }
 };
 exports.AppController = AppController;

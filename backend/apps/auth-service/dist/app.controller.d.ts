@@ -3,5 +3,5 @@ import { CreateAuthDto } from './dto/create-auth.dto';
 export declare class AppController {
     private readonly appService;
     constructor(appService: AppService);
-    createAccount(data: CreateAuthDto): void;
+    createAccount(data: CreateAuthDto): Promise<import("./user.model").User>;
 }

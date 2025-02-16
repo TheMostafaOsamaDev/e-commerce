@@ -50,6 +50,14 @@ services:
       timeout: 5s
       retries: 5
 
+  adminer:
+    image: adminer
+    container_name: adminer
+    ports:
+      - "7070:8080"
+    networks:
+      - e_commerce_network
+
   auth-service:
     build: ./apps/auth-service
     container_name: auth_service

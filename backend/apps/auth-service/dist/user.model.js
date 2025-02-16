@@ -11,7 +11,15 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
 const sequelize_typescript_1 = require("sequelize-typescript");
+const bcrypt = require("bcrypt");
 let User = class User extends sequelize_typescript_1.Model {
+    static async hashPassword(instance) {
+        const saltRounds = 10;
+        instance.password = await bcrypt.hash(instance.password, saltRounds);
+    }
+    async comparePassword(candidatePassword) {
+        return bcrypt.compare(candidatePassword, this.password);
+    }
 };
 exports.User = User;
 __decorate([
@@ -43,6 +51,12 @@ __decorate([
     }),
     __metadata("design:type", String)
 ], User.prototype, "lastName", void 0);
+__decorate([
+    sequelize_typescript_1.BeforeCreate,
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [User]),
+    __metadata("design:returntype", Promise)
+], User, "hashPassword", null);
 exports.User = User = __decorate([
     (0, sequelize_typescript_1.Table)({ tableName: 'users' })
 ], User);

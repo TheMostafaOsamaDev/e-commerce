@@ -8,9 +8,16 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppService = void 0;
 const common_1 = require("@nestjs/common");
+const user_model_1 = require("./user.model");
 let AppService = class AppService {
-    getHello() {
-        return 'Hello World!';
+    async createUser(data) {
+        const user = await user_model_1.User.create({
+            email: data.email,
+            password: data.password,
+            firstName: data.firstName,
+            lastName: data.lastName,
+        });
+        return user;
     }
 };
 exports.AppService = AppService;

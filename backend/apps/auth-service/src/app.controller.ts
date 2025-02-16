@@ -9,6 +9,6 @@ export class AppController {
 
   @EventPattern({ cmd: 'create_account' })
   createAccount(@Body() data: CreateAuthDto) {
-    console.log('Received data:', data);
+    return this.appService.createUser(data);
   }
 }
