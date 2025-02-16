@@ -16,21 +16,22 @@ exports.AuthController = void 0;
 const common_1 = require("@nestjs/common");
 const auth_service_1 = require("./auth.service");
 const microservices_1 = require("@nestjs/microservices");
+const create_auth_dto_1 = require("./dto/create-auth.dto");
 let AuthController = class AuthController {
     constructor(authService, authClient) {
         this.authService = authService;
         this.authClient = authClient;
     }
     createAccount(data) {
-        console.log(data);
-        this.authClient.send({ cmd: 'create_account' }, data);
+        this.authClient.emit({ cmd: 'create_account' }, data);
     }
 };
 exports.AuthController = AuthController;
 __decorate([
     (0, common_1.Post)('sign-up'),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [create_auth_dto_1.CreateAuthDto]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "createAccount", null);
 exports.AuthController = AuthController = __decorate([

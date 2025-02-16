@@ -1,3 +1,4 @@
+version: "3.8"
 services:
   rabbitmq:
     image: rabbitmq:3-management
@@ -12,13 +13,18 @@ services:
       - rabbitmq_data:/var/lib/rabbitmq
     networks:
       - e_commerce_network
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   e_commerce_db:
     image: mysql:8
     container_name: e_commerce_db
     restart: always
     ports:
-      - "3306:3306"
+      - "3307:3306"
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: e_commerce
@@ -28,6 +34,21 @@ services:
       - mysql_data:/var/lib/mysql
     networks:
       - e_commerce_network
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "mysqladmin",
+          "ping",
+          "-h",
+          "localhost",
+          "-u",
+          "user",
+          "-ppassword",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   auth-service:
     build: ./apps/auth-service
@@ -40,78 +61,19 @@ services:
       - DB_PASSWORD=password
       - DB_NAME=e_commerce
       - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672
+      - RABBITMQ_QUEUE=auth_queue
     volumes:
       - ./apps/auth-service:/app
       - /app/node_modules
-    command: npm run start:dev
+    command: sh -c "sleep 15 && npm run start:dev"
     depends_on:
-      - rabbitmq
-      - e_commerce_db
+      rabbitmq:
+        condition: service_healthy
+      e_commerce_db:
+        condition: service_healthy
     networks:
       - e_commerce_network
-
-  product-service:
-    build: ./apps/product-service
-    container_name: product_service
-    environment:
-      - NODE_ENV=development
-      - DB_HOST=e_commerce_db
-      - DB_PORT=3306
-      - DB_USER=user
-      - DB_PASSWORD=password
-      - DB_NAME=e_commerce
-      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672
-    volumes:
-      - ./apps/product-service:/app
-      - /app/node_modules
-    command: npm run start:dev
-    depends_on:
-      - rabbitmq
-      - e_commerce_db
-    networks:
-      - e_commerce_network
-
-  notification-service:
-    build: ./apps/notification-service
-    container_name: notification_service
-    environment:
-      - NODE_ENV=development
-      - DB_HOST=e_commerce_db
-      - DB_PORT=3306
-      - DB_USER=user
-      - DB_PASSWORD=password
-      - DB_NAME=e_commerce
-      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672
-    volumes:
-      - ./apps/notification-service:/app
-      - /app/node_modules
-    command: npm run start:dev
-    depends_on:
-      - rabbitmq
-      - e_commerce_db
-    networks:
-      - e_commerce_network
-
-  order-service:
-    build: ./apps/order-service
-    container_name: order_service
-    environment:
-      - NODE_ENV=development
-      - DB_HOST=e_commerce_db
-      - DB_PORT=3306
-      - DB_USER=user
-      - DB_PASSWORD=password
-      - DB_NAME=e_commerce
-      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672
-    volumes:
-      - ./apps/order-service:/app
-      - /app/node_modules
-    command: npm run start:dev
-    depends_on:
-      - rabbitmq
-      - e_commerce_db
-    networks:
-      - e_commerce_network
+    restart: on-failure
 
   api-gateway:
     build: ./apps/gateway
@@ -121,28 +83,22 @@ services:
     environment:
       - NODE_ENV=development
       - AUTH_SERVICE_URL=auth-service
-      - PRODUCT_SERVICE_URL=product-service
-      - NOTIFICATION_SERVICE_URL=notification-service
-      - ORDER_SERVICE_URL=order-service
       - DB_HOST=e_commerce_db
       - DB_PORT=3306
       - DB_USER=user
       - DB_PASSWORD=password
       - DB_NAME=e_commerce
       - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672
+      - RABBITMQ_QUEUE=gateway_queue
     volumes:
       - ./apps/gateway:/app
       - /app/node_modules
-    command: npm run start:dev
+    command: sh -c "sleep 20 && npm run start:dev"
     depends_on:
       - auth-service
-      - product-service
-      - notification-service
-      - order-service
-      - rabbitmq
-      - e_commerce_db
     networks:
       - e_commerce_network
+    restart: on-failure
 
 volumes:
   rabbitmq_data:

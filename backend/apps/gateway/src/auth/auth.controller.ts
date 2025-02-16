@@ -1,6 +1,7 @@
-import { Controller, Inject, Post } from '@nestjs/common';
+import { Body, Controller, Inject, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ClientProxy } from '@nestjs/microservices';
+import { CreateAuthDto } from './dto/create-auth.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -10,8 +11,7 @@ export class AuthController {
   ) {}
 
   @Post('sign-up')
-  createAccount(data: any) {
-    console.log(data);
-    this.authClient.send({ cmd: 'create_account' }, data);
+  createAccount(@Body() data: CreateAuthDto) {
+    this.authClient.emit({ cmd: 'create_account' }, data);
   }
 }

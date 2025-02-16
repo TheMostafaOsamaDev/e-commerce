@@ -1,6 +1,7 @@
 import { AppService } from './app.service';
+import { CreateAuthDto } from './dto/create-auth.dto';
 export declare class AppController {
     private readonly appService;
     constructor(appService: AppService);
-    createAccount(data: any): void;
+    createAccount(data: CreateAuthDto): void;
 }

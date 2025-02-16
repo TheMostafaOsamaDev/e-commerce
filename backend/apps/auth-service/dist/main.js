@@ -15,6 +15,7 @@ async function bootstrap() {
             },
         },
     });
+    app.useGlobalPipes(new common_1.ValidationPipe());
     common_1.Logger.warn('Auth-Service is running...');
     await app.listen();
 }

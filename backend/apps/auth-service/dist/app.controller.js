@@ -16,6 +16,7 @@ exports.AppController = void 0;
 const common_1 = require("@nestjs/common");
 const app_service_1 = require("./app.service");
 const microservices_1 = require("@nestjs/microservices");
+const create_auth_dto_1 = require("./dto/create-auth.dto");
 let AppController = class AppController {
     constructor(appService) {
         this.appService = appService;
@@ -26,10 +27,10 @@ let AppController = class AppController {
 };
 exports.AppController = AppController;
 __decorate([
-    (0, microservices_1.MessagePattern)({ cmd: 'create_account' }),
+    (0, microservices_1.EventPattern)({ cmd: 'create_account' }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [create_auth_dto_1.CreateAuthDto]),
     __metadata("design:returntype", void 0)
 ], AppController.prototype, "createAccount", null);
 exports.AppController = AppController = __decorate([
