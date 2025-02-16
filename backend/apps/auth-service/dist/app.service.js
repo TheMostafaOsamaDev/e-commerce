@@ -11,13 +11,22 @@ const common_1 = require("@nestjs/common");
 const user_model_1 = require("./user.model");
 let AppService = class AppService {
     async createUser(data) {
-        const user = await user_model_1.User.create({
-            email: data.email,
-            password: data.password,
-            firstName: data.firstName,
-            lastName: data.lastName,
+        const [user, created] = await user_model_1.User.findOrCreate({
+            where: { email: data.email },
+            defaults: {
+                email: data.email,
+                password: data.password,
+                firstName: data.firstName,
+                lastName: data.lastName,
+            },
         });
-        return user;
+        const userData = user.get({ plain: true });
+        return {
+            id: userData.id,
+            email: userData.email,
+            firstName: userData.firstName,
+            lastName: userData.lastName,
+        };
     }
 };
 exports.AppService = AppService;

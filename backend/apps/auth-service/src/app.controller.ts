@@ -7,8 +7,8 @@ import { CreateAuthDto } from './dto/create-auth.dto';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @EventPattern({ cmd: 'create_account' })
-  createAccount(@Body() data: CreateAuthDto) {
+  @MessagePattern({ cmd: 'create_account' })
+  createAccount(data: CreateAuthDto) {
     return this.appService.createUser(data);
   }
 }

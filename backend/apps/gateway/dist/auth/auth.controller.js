@@ -23,7 +23,7 @@ let AuthController = class AuthController {
         this.authClient = authClient;
     }
     createAccount(data) {
-        this.authClient.emit({ cmd: 'create_account' }, data);
+        return this.authClient.send({ cmd: 'create_account' }, data);
     }
 };
 exports.AuthController = AuthController;

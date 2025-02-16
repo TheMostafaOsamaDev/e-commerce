@@ -12,6 +12,6 @@ export class AuthController {
 
   @Post('sign-up')
   createAccount(@Body() data: CreateAuthDto) {
-    this.authClient.emit({ cmd: 'create_account' }, data);
+    return this.authClient.send({ cmd: 'create_account' }, data);
   }
 }

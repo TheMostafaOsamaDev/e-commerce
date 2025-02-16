@@ -1,4 +1,5 @@
 version: "3.8"
+
 services:
   rabbitmq:
     image: rabbitmq:3-management
@@ -50,11 +51,17 @@ services:
       timeout: 5s
       retries: 5
 
-  adminer:
-    image: adminer
-    container_name: adminer
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    restart: always
     ports:
-      - "7070:8080"
+      - "5000:80"
+    environment:
+      PMA_HOST: e_commerce_db
+      MYSQL_ROOT_PASSWORD: root
+    depends_on:
+      - e_commerce_db
     networks:
       - e_commerce_network
 
