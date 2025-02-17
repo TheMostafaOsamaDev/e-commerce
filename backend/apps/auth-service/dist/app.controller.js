@@ -26,7 +26,9 @@ let AppController = class AppController {
             firstName: user.firstName,
             lastName: user.lastName,
         };
+        console.log(user);
         const cachedUser = await this.appService.cacheSessions({ userData });
+        console.log(cachedUser);
         const token = this.appService.generateToken({
             userData: cachedUser.user,
             isHashed: false,

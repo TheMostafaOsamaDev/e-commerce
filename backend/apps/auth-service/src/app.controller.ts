@@ -1,4 +1,4 @@
-import { Body, Controller } from '@nestjs/common';
+import { Body, Controller, Res } from '@nestjs/common';
 import { AppService } from './app.service';
 import { EventPattern, MessagePattern } from '@nestjs/microservices';
 import { CreateAuthDto } from './dto/create-auth.dto';
@@ -18,7 +18,11 @@ export class AppController {
       lastName: user.lastName,
     };
 
+    console.log(user);
+
     const cachedUser = await this.appService.cacheSessions({ userData });
+
+    console.log(cachedUser);
 
     const token = this.appService.generateToken({
       userData: cachedUser.user,

@@ -24,7 +24,7 @@ let AppService = class AppService {
         this.cacheManager = cacheManager;
     }
     async createUser(data) {
-        const [user, created] = await user_model_1.User.findOrCreate({
+        const [user, _] = await user_model_1.User.findOrCreate({
             where: { email: data.email },
             defaults: {
                 email: data.email,

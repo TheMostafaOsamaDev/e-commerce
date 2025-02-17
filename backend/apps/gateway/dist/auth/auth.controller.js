@@ -22,7 +22,7 @@ let AuthController = class AuthController {
         this.authService = authService;
         this.authClient = authClient;
     }
-    createAccount(data) {
+    createAccount(data, res) {
         return this.authClient.send({ cmd: 'create_account' }, data);
     }
 };
@@ -30,8 +30,9 @@ exports.AuthController = AuthController;
 __decorate([
     (0, common_1.Post)('sign-up'),
     __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Response)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_auth_dto_1.CreateAuthDto]),
+    __metadata("design:paramtypes", [create_auth_dto_1.CreateAuthDto, Object]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "createAccount", null);
 exports.AuthController = AuthController = __decorate([

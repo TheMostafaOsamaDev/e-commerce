@@ -12,7 +12,7 @@ export class AppService {
   constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache) {}
 
   async createUser(data: CreateAuthDto) {
-    const [user, created] = await User.findOrCreate({
+    const [user, _] = await User.findOrCreate({
       where: { email: data.email },
       defaults: {
         email: data.email,

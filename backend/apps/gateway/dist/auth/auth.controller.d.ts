@@ -5,5 +5,5 @@ export declare class AuthController {
     private readonly authService;
     private readonly authClient;
     constructor(authService: AuthService, authClient: ClientProxy);
-    createAccount(data: CreateAuthDto): import("rxjs").Observable<any>;
+    createAccount(data: CreateAuthDto, res: any): import("rxjs").Observable<any>;
 }

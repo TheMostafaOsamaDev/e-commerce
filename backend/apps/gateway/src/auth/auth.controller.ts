@@ -1,4 +1,4 @@
-import { Body, Controller, Inject, Post } from '@nestjs/common';
+import { Body, Controller, Inject, Post, Response } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ClientProxy } from '@nestjs/microservices';
 import { CreateAuthDto } from './dto/create-auth.dto';
@@ -11,7 +11,7 @@ export class AuthController {
   ) {}
 
   @Post('sign-up')
-  createAccount(@Body() data: CreateAuthDto) {
+  createAccount(@Body() data: CreateAuthDto, @Response() res) {
     return this.authClient.send({ cmd: 'create_account' }, data);
   }
 }

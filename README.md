@@ -5,7 +5,7 @@
 - [x] Initialize Next.js frontend
 - [x] Initialize NestJS backend with microservices
 - [x] Set up MySQL database with Sequelize
-- [ ] Configure Redis for caching
+- [x] Configure Redis for caching
 - [x] Set up RabbitMQ/Kafka for event-driven architecture
 - [ ] Set up Docker for frontend (Next.js)
 - [x] Set up Docker for backend (NestJS & microservices)
