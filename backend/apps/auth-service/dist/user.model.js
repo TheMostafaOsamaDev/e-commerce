@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
 const sequelize_typescript_1 = require("sequelize-typescript");
 const bcrypt = require("bcryptjs");
+const sequelize_1 = require("sequelize");
 let User = class User extends sequelize_typescript_1.Model {
     static async hashPassword(instance) {
         const saltRounds = 10;
@@ -22,6 +23,15 @@ let User = class User extends sequelize_typescript_1.Model {
     }
 };
 exports.User = User;
+__decorate([
+    sequelize_typescript_1.PrimaryKey,
+    (0, sequelize_typescript_1.Default)(sequelize_1.UUIDV4),
+    (0, sequelize_typescript_1.Column)({
+        type: sequelize_typescript_1.DataType.UUID,
+        allowNull: false,
+    }),
+    __metadata("design:type", String)
+], User.prototype, "id", void 0);
 __decorate([
     (0, sequelize_typescript_1.Column)({
         type: sequelize_typescript_1.DataType.STRING,

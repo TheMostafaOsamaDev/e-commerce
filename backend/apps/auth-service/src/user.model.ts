@@ -4,14 +4,25 @@ import {
   Model,
   DataType,
   BeforeCreate,
+  Default,
+  PrimaryKey,
 } from 'sequelize-typescript';
 import * as bcrypt from 'bcryptjs';
+import { UUIDV4 } from 'sequelize';
 
 @Table({ tableName: 'users' })
 export class User extends Model<
   User,
   Pick<User, 'email' | 'password' | 'firstName' | 'lastName'>
 > {
+  @PrimaryKey
+  @Default(UUIDV4)
+  @Column({
+    type: DataType.UUID,
+    allowNull: false,
+  })
+  id: string;
+
   @Column({
     type: DataType.STRING,
     allowNull: false,
@@ -47,3 +58,11 @@ export class User extends Model<
     return bcrypt.compare(candidatePassword, this.password);
   }
 }
+
+export type UserType = {
+  id: string;
+  email: string;
+  password?: string;
+  firstName: string;
+  lastName: string;
+};

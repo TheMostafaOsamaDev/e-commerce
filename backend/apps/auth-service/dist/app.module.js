@@ -10,12 +10,18 @@ exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
 const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
+const cache_manager_1 = require("@nestjs/cache-manager");
+const config_1 = require("@nestjs/config");
+const redis_config_1 = require("./config/redis.config");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
-        imports: [],
+        imports: [
+            config_1.ConfigModule.forRoot({ isGlobal: true }),
+            cache_manager_1.CacheModule.register(redis_config_1.RedisOptions),
+        ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],
     })

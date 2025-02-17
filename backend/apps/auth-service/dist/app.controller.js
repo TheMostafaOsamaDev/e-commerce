@@ -18,8 +18,23 @@ let AppController = class AppController {
     constructor(appService) {
         this.appService = appService;
     }
-    createAccount(data) {
-        return this.appService.createUser(data);
+    async createAccount(data) {
+        const user = await this.appService.createUser(data);
+        const userData = {
+            id: user.id,
+            email: user.email,
+            firstName: user.firstName,
+            lastName: user.lastName,
+        };
+        const cachedUser = await this.appService.cacheSessions({ userData });
+        const token = this.appService.generateToken({
+            userData: cachedUser.user,
+            isHashed: false,
+        });
+        return {
+            ...cachedUser,
+            token,
+        };
     }
 };
 exports.AppController = AppController;
@@ -27,7 +42,7 @@ __decorate([
     (0, microservices_1.MessagePattern)({ cmd: 'create_account' }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_auth_dto_1.CreateAuthDto]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], AppController.prototype, "createAccount", null);
 exports.AppController = AppController = __decorate([
     (0, common_1.Controller)(),

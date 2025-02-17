@@ -4,9 +4,7 @@ export declare class AppController {
     private readonly appService;
     constructor(appService: AppService);
     createAccount(data: CreateAuthDto): Promise<{
-        id: any;
-        email: string;
-        firstName: string;
-        lastName: string;
+        token: string;
+        user: import("./user.model").UserType;
     }>;
 }
