@@ -17,7 +17,7 @@ export class AppController {
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,
-      isAdmin: user.isAdmin,
+      isAdmin: false,
     };
 
     const cachedUser = await this.appService.cacheSessions({ userData });
@@ -43,7 +43,7 @@ export class AppController {
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,
-      isAdmin: user.isAdmin,
+      isAdmin: false,
     };
 
     const cachedUser = await this.appService.cacheSessions({ userData });

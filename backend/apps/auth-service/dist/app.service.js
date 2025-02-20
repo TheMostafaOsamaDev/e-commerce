@@ -32,6 +32,7 @@ let AppService = class AppService {
                 password: data.password,
                 firstName: data.firstName,
                 lastName: data.lastName,
+                isAdmin: false,
             },
         });
         const userData = user.get({ plain: true });
