@@ -26,6 +26,7 @@ let AppController = class AppController {
             email: user.email,
             firstName: user.firstName,
             lastName: user.lastName,
+            isAdmin: user.isAdmin,
         };
         const cachedUser = await this.appService.cacheSessions({ userData });
         const token = this.appService.generateToken({
@@ -45,6 +46,7 @@ let AppController = class AppController {
             email: user.email,
             firstName: user.firstName,
             lastName: user.lastName,
+            isAdmin: user.isAdmin,
         };
         const cachedUser = await this.appService.cacheSessions({ userData });
         const token = this.appService.generateToken({

@@ -2,9 +2,27 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { Providers } from "@/components/providers/providers";
+import Header from "@/components/header/Header";
 
 const notoSansArabic = localFont({
-  src: "./../fonts/NotoSansArabic_Regular.ttf",
+  src: "./../fonts/Montserrat/Montserrat-Medium.ttf",
+  // src: [
+  //   {
+  //     path: "./../fonts/Montserrat/Montserrat-Regular.ttf",
+  //     weight: "400",
+  //     style: "normal",
+  //   },
+  //   {
+  //     path: "./../fonts/Montserrat/Montserrat-Medium.ttf",
+  //     weight: "700",
+  //     style: "normal",
+  //   },
+  //   {
+  //     path: "./../fonts/Montserrat/Montserrat-Bold.ttf",
+  //     weight: "900",
+  //     style: "normal",
+  //   },
+  // ],
 });
 
 export const metadata: Metadata = {
@@ -20,7 +38,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${notoSansArabic.className} antialiased`}>
-        <Providers>{children}</Providers>
+        <Providers>
+          <Header />
+          {children}
+        </Providers>
       </body>
     </html>
   );
