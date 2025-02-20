@@ -39,7 +39,6 @@ let AppController = class AppController {
         };
     }
     async signIn(data) {
-        console.log(`From Sign In Handler: ${JSON.stringify(data)}`);
         const user = await this.appService.signIn(data);
         const userData = {
             id: user.id,

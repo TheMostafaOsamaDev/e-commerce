@@ -27,8 +27,7 @@ let AuthController = class AuthController {
     async createAccount(data) {
         return this.authClient.send({ cmd: 'create_account' }, data);
     }
-    async signIn(data, res) {
-        console.log(`From AuthController: ${JSON.stringify(data)}`);
+    async signIn(data) {
         return this.authClient.send({ cmd: 'sign_in' }, data);
     }
 };
@@ -45,9 +44,8 @@ __decorate([
     (0, common_1.Post)('sign-in'),
     (0, common_1.UseInterceptors)(auth_Interceptor_1.AuthInterceptor),
     __param(0, (0, common_1.Body)()),
-    __param(1, (0, common_1.Res)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [sign_in_dto_1.SignInDto, Object]),
+    __metadata("design:paramtypes", [sign_in_dto_1.SignInDto]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "signIn", null);
 exports.AuthController = AuthController = __decorate([

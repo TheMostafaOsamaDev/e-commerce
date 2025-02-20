@@ -19,6 +19,7 @@ const cache_manager_1 = require("@nestjs/cache-manager");
 const config_1 = require("./config");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const microservices_1 = require("@nestjs/microservices");
 let AppService = class AppService {
     constructor(cacheManager) {
         this.cacheManager = cacheManager;
@@ -46,13 +47,20 @@ let AppService = class AppService {
             where: { email: signInDto.email },
         });
         if (!user) {
-            throw new common_1.NotFoundException('User not found');
+            throw new microservices_1.RpcException({
+                statusCode: 404,
+                message: 'User not found',
+            });
         }
         const isMatched = await user.comparePassword(signInDto.password);
         if (!isMatched) {
-            throw new common_1.BadRequestException('Invalid credentials');
+            throw new microservices_1.RpcException({
+                statusCode: 400,
+                message: 'Invalid credentials',
+            });
         }
         const userData = user.get({ plain: true });
+        console.log(userData);
         return {
             id: userData.id,
             email: userData.email,

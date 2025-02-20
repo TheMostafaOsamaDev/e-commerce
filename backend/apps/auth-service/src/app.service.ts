@@ -1,9 +1,4 @@
-import {
-  BadRequestException,
-  Inject,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { User, UserType } from './user.model';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
@@ -12,6 +7,7 @@ import { AUTH_TTL, TOKEN_TIME } from './config';
 import * as jwt from 'jsonwebtoken';
 import * as bcrypt from 'bcryptjs';
 import { SignInDto } from './dto/sign-in.dto';
+import { RpcException } from '@nestjs/microservices';
 
 @Injectable()
 export class AppService {
@@ -44,16 +40,26 @@ export class AppService {
     });
 
     if (!user) {
-      throw new NotFoundException('User not found');
+      // throw new NotFoundException('User not found');
+      throw new RpcException({
+        statusCode: 404,
+        message: 'User not found',
+      });
     }
 
     const isMatched = await user.comparePassword(signInDto.password);
 
     if (!isMatched) {
-      throw new BadRequestException('Invalid credentials');
+      // throw new BadRequestException('Invalid credentials');
+      throw new RpcException({
+        statusCode: 400,
+        message: 'Invalid credentials',
+      });
     }
 
     const userData = user.get({ plain: true });
+
+    console.log(userData);
 
     return {
       id: userData.id,

@@ -35,7 +35,6 @@ export class AppController {
 
   @MessagePattern({ cmd: 'sign_in' })
   async signIn(data: SignInDto) {
-    console.log(`From Sign In Handler: ${JSON.stringify(data)}`);
     const user = await this.appService.signIn(data);
 
     const userData = {
