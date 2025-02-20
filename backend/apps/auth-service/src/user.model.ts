@@ -13,7 +13,7 @@ import { UUIDV4 } from 'sequelize';
 @Table({ tableName: 'users' })
 export class User extends Model<
   User,
-  Pick<User, 'email' | 'password' | 'firstName' | 'lastName'>
+  Pick<User, 'email' | 'password' | 'firstName' | 'lastName' | 'isAdmin'>
 > {
   @PrimaryKey
   @Default(UUIDV4)
@@ -48,6 +48,13 @@ export class User extends Model<
   })
   lastName: string;
 
+  @Default(false)
+  @Column({
+    type: DataType.BOOLEAN,
+    allowNull: false,
+  })
+  isAdmin: boolean;
+
   @BeforeCreate
   static async hashPassword(instance: User) {
     const saltRounds = 10;
@@ -65,4 +72,5 @@ export type UserType = {
   password?: string;
   firstName: string;
   lastName: string;
+  isAdmin: boolean;
 };

@@ -62,6 +62,14 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "lastName", void 0);
 __decorate([
+    (0, sequelize_typescript_1.Default)(false),
+    (0, sequelize_typescript_1.Column)({
+        type: sequelize_typescript_1.DataType.BOOLEAN,
+        allowNull: false,
+    }),
+    __metadata("design:type", Boolean)
+], User.prototype, "isAdmin", void 0);
+__decorate([
     sequelize_typescript_1.BeforeCreate,
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [User]),
