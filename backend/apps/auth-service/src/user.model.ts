@@ -55,7 +55,7 @@ export class User extends Model<
   }
 
   async comparePassword(candidatePassword: string): Promise<boolean> {
-    return bcrypt.compare(candidatePassword, this.password);
+    return await bcrypt.compare(candidatePassword, this.password);
   }
 }
 

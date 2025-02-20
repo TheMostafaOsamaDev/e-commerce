@@ -9,20 +9,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
 let AuthService = class AuthService {
-    create(createAuthDto) {
-        return 'This action adds a new auth';
-    }
-    findAll() {
-        return `This action returns all auth`;
-    }
-    findOne(id) {
-        return `This action returns a #${id} auth`;
-    }
-    update(id, updateAuthDto) {
-        return `This action updates a #${id} auth`;
-    }
-    remove(id) {
-        return `This action removes a #${id} auth`;
+    createTokenCookie(res, token) {
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+        });
     }
 };
 exports.AuthService = AuthService;

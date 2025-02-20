@@ -41,18 +41,45 @@ let AppService = class AppService {
             lastName: userData.lastName,
         };
     }
+    async signIn(signInDto) {
+        const user = await user_model_1.User.findOne({
+            where: { email: signInDto.email },
+        });
+        if (!user) {
+            throw new common_1.NotFoundException('User not found');
+        }
+        const isMatched = await user.comparePassword(signInDto.password);
+        if (!isMatched) {
+            throw new common_1.BadRequestException('Invalid credentials');
+        }
+        const userData = user.get({ plain: true });
+        return {
+            id: userData.id,
+            email: userData.email,
+            firstName: userData.firstName,
+            lastName: userData.lastName,
+        };
+    }
     async cacheSessions({ userData }) {
-        const key = `${userData.email}`;
-        const token = this.generateToken({ userData, isHashed: true });
+        const authedAt = new Date().toISOString();
+        const key = `${userData.email}-${authedAt}`;
+        const token = this.generateToken({ userData, isHashed: true, authedAt });
         await this.cacheManager.set(key, { ...userData, token }, config_1.AUTH_TTL);
         return {
             token,
             user: userData,
+            authedAt,
         };
     }
-    generateToken({ userData, isHashed, }) {
+    generateToken({ userData, isHashed, authedAt, }) {
         const expiresIn = config_1.AUTH_TTL | config_1.TOKEN_TIME;
-        const token = jwt.sign(userData, process.env.TOKEN_SECRET, { expiresIn });
+        const TOKEN_SECRET = isHashed
+            ? process.env.TOKEN_SECRET
+            : process.env.CLIENT_TOKEN_SECRET;
+        const token = jwt.sign({
+            ...userData,
+            authedAt,
+        }, TOKEN_SECRET, { expiresIn });
         if (isHashed) {
             const salt = bcrypt.genSaltSync(10);
             const hash = bcrypt.hashSync(token, salt);

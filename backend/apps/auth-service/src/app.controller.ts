@@ -1,7 +1,8 @@
-import { Body, Controller, Res } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { AppService } from './app.service';
-import { EventPattern, MessagePattern } from '@nestjs/microservices';
+import { MessagePattern } from '@nestjs/microservices';
 import { CreateAuthDto } from './dto/create-auth.dto';
+import { SignInDto } from './dto/sign-in.dto';
 
 @Controller()
 export class AppController {
@@ -18,19 +19,42 @@ export class AppController {
       lastName: user.lastName,
     };
 
-    console.log(user);
-
     const cachedUser = await this.appService.cacheSessions({ userData });
-
-    console.log(cachedUser);
 
     const token = this.appService.generateToken({
       userData: cachedUser.user,
       isHashed: false,
+      authedAt: cachedUser.authedAt,
     });
 
     return {
       ...cachedUser,
+      token,
+    };
+  }
+
+  @MessagePattern({ cmd: 'sign_in' })
+  async signIn(data: SignInDto) {
+    console.log(`From Sign In Handler: ${JSON.stringify(data)}`);
+    const user = await this.appService.signIn(data);
+
+    const userData = {
+      id: user.id,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+    };
+
+    const cachedUser = await this.appService.cacheSessions({ userData });
+
+    const token = this.appService.generateToken({
+      userData,
+      isHashed: false,
+      authedAt: cachedUser.authedAt,
+    });
+
+    return {
+      user,
       token,
     };
   }

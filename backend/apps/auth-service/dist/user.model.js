@@ -19,7 +19,7 @@ let User = class User extends sequelize_typescript_1.Model {
         instance.password = await bcrypt.hash(instance.password, saltRounds);
     }
     async comparePassword(candidatePassword) {
-        return bcrypt.compare(candidatePassword, this.password);
+        return await bcrypt.compare(candidatePassword, this.password);
     }
 };
 exports.User = User;

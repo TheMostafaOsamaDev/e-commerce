@@ -14,6 +14,7 @@ const common_1 = require("@nestjs/common");
 const app_service_1 = require("./app.service");
 const microservices_1 = require("@nestjs/microservices");
 const create_auth_dto_1 = require("./dto/create-auth.dto");
+const sign_in_dto_1 = require("./dto/sign-in.dto");
 let AppController = class AppController {
     constructor(appService) {
         this.appService = appService;
@@ -26,15 +27,34 @@ let AppController = class AppController {
             firstName: user.firstName,
             lastName: user.lastName,
         };
-        console.log(user);
         const cachedUser = await this.appService.cacheSessions({ userData });
-        console.log(cachedUser);
         const token = this.appService.generateToken({
             userData: cachedUser.user,
             isHashed: false,
+            authedAt: cachedUser.authedAt,
         });
         return {
             ...cachedUser,
+            token,
+        };
+    }
+    async signIn(data) {
+        console.log(`From Sign In Handler: ${JSON.stringify(data)}`);
+        const user = await this.appService.signIn(data);
+        const userData = {
+            id: user.id,
+            email: user.email,
+            firstName: user.firstName,
+            lastName: user.lastName,
+        };
+        const cachedUser = await this.appService.cacheSessions({ userData });
+        const token = this.appService.generateToken({
+            userData,
+            isHashed: false,
+            authedAt: cachedUser.authedAt,
+        });
+        return {
+            user,
             token,
         };
     }
@@ -46,6 +66,12 @@ __decorate([
     __metadata("design:paramtypes", [create_auth_dto_1.CreateAuthDto]),
     __metadata("design:returntype", Promise)
 ], AppController.prototype, "createAccount", null);
+__decorate([
+    (0, microservices_1.MessagePattern)({ cmd: 'sign_in' }),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [sign_in_dto_1.SignInDto]),
+    __metadata("design:returntype", Promise)
+], AppController.prototype, "signIn", null);
 exports.AppController = AppController = __decorate([
     (0, common_1.Controller)(),
     __metadata("design:paramtypes", [app_service_1.AppService])
