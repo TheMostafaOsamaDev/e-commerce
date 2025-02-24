@@ -14,10 +14,8 @@ let AuthInterceptor = class AuthInterceptor {
     intercept(context, next) {
         const ctx = context.switchToHttp();
         const res = ctx.getResponse();
-        console.log(`Hello from AuthInterceptor!`);
         return next.handle().pipe((0, operators_1.tap)((body) => {
             if (body && body.token) {
-                console.log(body);
                 res.cookie('auth_token', body.token, {
                     httpOnly: true,
                     secure: process.env.NODE_ENV === 'production',
@@ -25,7 +23,7 @@ let AuthInterceptor = class AuthInterceptor {
                 });
                 return body;
             }
-        }), (0, operators_1.map)((body) => body.user));
+        }), (0, operators_1.map)((body) => (body?.user ? body.user : body)));
     }
 };
 exports.AuthInterceptor = AuthInterceptor;

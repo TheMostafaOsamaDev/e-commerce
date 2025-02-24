@@ -59,4 +59,9 @@ export class AppController {
       token,
     };
   }
+
+  @MessagePattern({ cmd: 'verify_token' })
+  async verifyToken(token: string) {
+    return this.appService.verifyToken(token);
+  }
 }

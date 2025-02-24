@@ -117,4 +117,27 @@ export class AppService {
 
     return token;
   }
+
+  async verifyToken(token: string) {
+    try {
+      const decoded = jwt.verify(token, process.env.CLIENT_TOKEN_SECRET!);
+
+      const user: UserType = decoded as UserType;
+
+      if (user) {
+        const key = `${user.email}-${user.authedAt}`;
+
+        const cachedUser = await this.cacheManager.get(key);
+
+        console.log(`Cahced user: ${cachedUser}`);
+      }
+
+      return decoded;
+    } catch (e) {
+      throw new RpcException({
+        statusCode: 401,
+        message: 'Invalid token',
+      });
+    }
+  }
 }

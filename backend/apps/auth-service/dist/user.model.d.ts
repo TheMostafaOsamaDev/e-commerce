@@ -16,4 +16,5 @@ export type UserType = {
     firstName: string;
     lastName: string;
     isAdmin: boolean;
+    authedAt?: string;
 };

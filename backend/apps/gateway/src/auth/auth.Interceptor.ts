@@ -17,12 +17,9 @@ export class AuthInterceptor implements NestInterceptor {
     const ctx = context.switchToHttp();
     const res = ctx.getResponse();
 
-    console.log(`Hello from AuthInterceptor!`);
-
     return next.handle().pipe(
       tap((body) => {
         if (body && body.token) {
-          console.log(body);
           res.cookie('auth_token', body.token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
@@ -32,7 +29,7 @@ export class AuthInterceptor implements NestInterceptor {
           return body;
         }
       }),
-      map((body) => body.user),
+      map((body) => (body?.user ? body.user : body)),
     );
   }
 }

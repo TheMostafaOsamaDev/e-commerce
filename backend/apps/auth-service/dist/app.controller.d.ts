@@ -18,4 +18,5 @@ export declare class AppController {
         };
         token: string;
     }>;
+    verifyToken(token: string): Promise<string | import("jsonwebtoken").JwtPayload>;
 }

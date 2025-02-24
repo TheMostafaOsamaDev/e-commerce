@@ -1,6 +1,7 @@
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { UserType } from './user.model';
 import { Cache } from 'cache-manager';
+import * as jwt from 'jsonwebtoken';
 import { SignInDto } from './dto/sign-in.dto';
 export declare class AppService {
     private cacheManager;
@@ -29,4 +30,5 @@ export declare class AppService {
         isHashed: boolean;
         authedAt: string;
     }): string;
+    verifyToken(token: string): Promise<string | jwt.JwtPayload>;
 }

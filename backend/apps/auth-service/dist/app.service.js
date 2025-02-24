@@ -96,6 +96,24 @@ let AppService = class AppService {
         }
         return token;
     }
+    async verifyToken(token) {
+        try {
+            const decoded = jwt.verify(token, process.env.CLIENT_TOKEN_SECRET);
+            const user = decoded;
+            if (user) {
+                const key = `${user.email}-${user.authedAt}`;
+                const cachedUser = await this.cacheManager.get(key);
+                console.log(`Cahced user: ${cachedUser}`);
+            }
+            return decoded;
+        }
+        catch (e) {
+            throw new microservices_1.RpcException({
+                statusCode: 401,
+                message: 'Invalid token',
+            });
+        }
+    }
 };
 exports.AppService = AppService;
 exports.AppService = AppService = __decorate([

@@ -19,6 +19,7 @@ const microservices_1 = require("@nestjs/microservices");
 const create_auth_dto_1 = require("./dto/create-auth.dto");
 const auth_Interceptor_1 = require("./auth.Interceptor");
 const sign_in_dto_1 = require("./dto/sign-in.dto");
+const auth_guard_1 = require("./auth.guard");
 let AuthController = class AuthController {
     constructor(authService, authClient) {
         this.authService = authService;
@@ -29,6 +30,20 @@ let AuthController = class AuthController {
     }
     async signIn(data) {
         return this.authClient.send({ cmd: 'sign_in' }, data);
+    }
+    async verify(req, res) {
+        const user = req.user;
+        if (user)
+            return res.status(200).send({
+                id: user.id,
+                email: user.email,
+                firstName: user.firstName,
+                lastName: user.lastName,
+            });
+        res.status(401).send({
+            message: 'Unauthorized',
+            status: 401,
+        });
     }
 };
 exports.AuthController = AuthController;
@@ -48,6 +63,16 @@ __decorate([
     __metadata("design:paramtypes", [sign_in_dto_1.SignInDto]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "signIn", null);
+__decorate([
+    (0, common_1.Post)('verify'),
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
+    (0, common_1.UseInterceptors)(auth_Interceptor_1.AuthInterceptor),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "verify", null);
 exports.AuthController = AuthController = __decorate([
     (0, common_1.Controller)('auth'),
     __param(1, (0, common_1.Inject)('AUTH_SERVICE')),

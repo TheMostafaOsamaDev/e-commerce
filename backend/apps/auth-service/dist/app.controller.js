@@ -59,6 +59,9 @@ let AppController = class AppController {
             token,
         };
     }
+    async verifyToken(token) {
+        return this.appService.verifyToken(token);
+    }
 };
 exports.AppController = AppController;
 __decorate([
@@ -73,6 +76,12 @@ __decorate([
     __metadata("design:paramtypes", [sign_in_dto_1.SignInDto]),
     __metadata("design:returntype", Promise)
 ], AppController.prototype, "signIn", null);
+__decorate([
+    (0, microservices_1.MessagePattern)({ cmd: 'verify_token' }),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], AppController.prototype, "verifyToken", null);
 exports.AppController = AppController = __decorate([
     (0, common_1.Controller)(),
     __metadata("design:paramtypes", [app_service_1.AppService])
