@@ -32,14 +32,16 @@ let AuthController = class AuthController {
         return this.authClient.send({ cmd: 'sign_in' }, data);
     }
     async verify(req, res) {
-        const user = req.user;
-        if (user)
+        const user = req.verifiedUser;
+        if (user) {
             return res.status(200).send({
                 id: user.id,
                 email: user.email,
                 firstName: user.firstName,
                 lastName: user.lastName,
+                token: user.isNew ? user.token : null,
             });
+        }
         res.status(401).send({
             message: 'Unauthorized',
             status: 401,

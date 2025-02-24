@@ -39,15 +39,17 @@ export class AuthController {
   @UseGuards(AuthGuard)
   @UseInterceptors(AuthInterceptor)
   async verify(@Req() req: Request, @Res() res: Response) {
-    const user = req.user;
+    const user = req.verifiedUser;
 
-    if (user)
+    if (user) {
       return res.status(200).send({
         id: user.id,
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
+        token: user.isNew ? user.token : null,
       });
+    }
 
     res.status(401).send({
       message: 'Unauthorized',

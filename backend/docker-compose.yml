@@ -70,10 +70,10 @@ services:
     ports:
       - "6379:6379"
     volumes:
-      - redis_data:/data # Mount a volume for persistent storage
+      - redis_data:/data
     networks:
       - e_commerce_network
-    command: ["redis-server", "--save", "60", "1", "--appendonly", "yes"] # Enable AOF persistence
+    command: ["redis-server", "--save", "60", "1", "--appendonly", "yes"]
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
@@ -129,7 +129,6 @@ services:
       - "8000:8000"
     environment:
       - NODE_ENV=development
-      - AUTH_SERVICE_URL=auth-service
       - DB_HOST=e_commerce_db
       - DB_PORT=3306
       - DB_USER=user
@@ -149,6 +148,12 @@ services:
     networks:
       - e_commerce_network
     restart: on-failure
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
 
 volumes:
   rabbitmq_data:

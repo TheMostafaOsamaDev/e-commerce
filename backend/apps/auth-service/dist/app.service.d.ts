@@ -30,5 +30,6 @@ export declare class AppService {
         isHashed: boolean;
         authedAt: string;
     }): string;
+    compareToken(userData: UserType, hashedToken: string): boolean;
     verifyToken(token: string): Promise<string | jwt.JwtPayload>;
 }

@@ -4,7 +4,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -16,13 +15,13 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useMutation } from "@tanstack/react-query";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -40,6 +39,9 @@ export default function SignUpForm() {
       firstName: "",
       lastName: "",
     },
+  });
+  const reigsterMutate = useMutation({
+    mutationKey: ["register"],
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
@@ -92,9 +94,6 @@ export default function SignUpForm() {
                   <FormControl>
                     <Input placeholder="shadcn" {...field} />
                   </FormControl>
-                  <FormDescription>
-                    We'll never share your email with anyone else.
-                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -125,9 +124,6 @@ export default function SignUpForm() {
           </form>
         </Form>
       </CardContent>
-      <CardFooter>
-        <p>Card Footer</p>
-      </CardFooter>
     </Card>
   );
 }

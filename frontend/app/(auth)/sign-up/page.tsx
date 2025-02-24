@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function SignUpPage() {
   return (
-    <section className="container">
+    <section className="container h-[85vh] grid place-items-center">
       <SignUpForm />
     </section>
   );

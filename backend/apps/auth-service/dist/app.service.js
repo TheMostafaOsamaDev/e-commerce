@@ -86,7 +86,10 @@ let AppService = class AppService {
             ? process.env.TOKEN_SECRET
             : process.env.CLIENT_TOKEN_SECRET;
         const token = jwt.sign({
-            ...userData,
+            id: userData.id,
+            email: userData.email,
+            firstName: userData.firstName,
+            lastName: userData.lastName,
             authedAt,
         }, TOKEN_SECRET, { expiresIn });
         if (isHashed) {
@@ -96,18 +99,81 @@ let AppService = class AppService {
         }
         return token;
     }
+    compareToken(userData, hashedToken) {
+        const token = this.generateToken({
+            userData,
+            isHashed: false,
+            authedAt: userData.authedAt || '',
+        });
+        const salt = bcrypt.genSaltSync(10);
+        const hash = bcrypt.hashSync(token, salt);
+        return bcrypt.compareSync(token, hash);
+    }
     async verifyToken(token) {
         try {
-            const decoded = jwt.verify(token, process.env.CLIENT_TOKEN_SECRET);
+            const decoded = jwt.verify(token, process.env.CLIENT_TOKEN_SECRET, {
+                ignoreExpiration: true,
+            });
             const user = decoded;
             if (user) {
                 const key = `${user.email}-${user.authedAt}`;
                 const cachedUser = await this.cacheManager.get(key);
-                console.log(`Cahced user: ${cachedUser}`);
+                if (!cachedUser) {
+                    throw new microservices_1.RpcException({
+                        statusCode: 401,
+                        message: 'Unauthorized',
+                    });
+                }
+                console.log(cachedUser);
+                console.log({
+                    token,
+                    cachedToken: cachedUser.token,
+                });
+                const userPayload = {
+                    id: user.id,
+                    email: user.email,
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    isAdmin: user.isAdmin,
+                };
+                const isMatched = this.compareToken(userPayload, cachedUser.token);
+                if (!isMatched) {
+                    throw new microservices_1.RpcException({
+                        statusCode: 401,
+                        message: 'Unauthorized',
+                    });
+                }
+                const currentTime = Math.floor(Date.now() / 1000);
+                const exp = decoded.exp || 0;
+                if (exp < currentTime) {
+                    const key = `${user.email}-${user.authedAt}`;
+                    await this.cacheManager.del(key);
+                    const newCachedUser = await this.cacheSessions({
+                        userData: userPayload,
+                    });
+                    const newToken = this.generateToken({
+                        userData: userPayload,
+                        isHashed: false,
+                        authedAt: newCachedUser.authedAt,
+                    });
+                    return {
+                        ...newCachedUser,
+                        token: newToken,
+                        isNew: true,
+                    };
+                }
+                else {
+                    return {
+                        ...cachedUser,
+                        token,
+                        isNew: false,
+                    };
+                }
             }
             return decoded;
         }
         catch (e) {
+            console.log(e);
             throw new microservices_1.RpcException({
                 statusCode: 401,
                 message: 'Invalid token',

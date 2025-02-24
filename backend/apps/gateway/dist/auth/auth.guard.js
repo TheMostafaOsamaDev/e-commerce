@@ -18,12 +18,11 @@ let AuthGuard = class AuthGuard {
     }
     async canActivate(context) {
         const req = context.switchToHttp().getRequest();
-        const authHeader = req.headers['auth_token'];
         const data = await this.authService.verifyToken(req);
         if (!data) {
             return false;
         }
-        req.user = data;
+        req.verifiedUser = data;
         return true;
     }
 };
