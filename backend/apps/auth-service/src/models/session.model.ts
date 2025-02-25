@@ -11,13 +11,16 @@ import {
 import { User } from './user.model';
 
 @Table({ tableName: 'sessions' })
-export class Session extends Model {
+export class Session extends Model<
+  Session,
+  Pick<Session, 'id' | 'userId' | 'token' | 'authedAt'>
+> {
   @PrimaryKey
   @Column({
     type: STRING,
     allowNull: false,
   })
-  key: string;
+  id: string;
 
   @ForeignKey(() => User)
   @Column({

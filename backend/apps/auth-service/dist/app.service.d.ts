@@ -1,11 +1,9 @@
 import { CreateAuthDto } from './dto/create-auth.dto';
-import { UserType } from './user.model';
-import { Cache } from 'cache-manager';
+import { UserType } from './models/user.model';
 import * as jwt from 'jsonwebtoken';
 import { SignInDto } from './dto/sign-in.dto';
 export declare class AppService {
-    private cacheManager;
-    constructor(cacheManager: Cache);
+    constructor();
     createUser(data: CreateAuthDto): Promise<{
         id: string;
         email: string;
@@ -18,7 +16,7 @@ export declare class AppService {
         firstName: string;
         lastName: string;
     }>;
-    cacheSessions({ userData }: {
+    createSession({ userData }: {
         userData: UserType;
     }): Promise<{
         token: string;

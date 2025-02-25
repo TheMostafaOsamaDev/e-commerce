@@ -59,8 +59,6 @@ export class AppService {
 
     const userData = user.get({ plain: true });
 
-    console.log(userData);
-
     return {
       id: userData.id,
       email: userData.email,
@@ -71,13 +69,12 @@ export class AppService {
 
   async createSession({ userData }: { userData: UserType }) {
     const authedAt = new Date().toISOString();
-    const key = `${userData.email}-${authedAt}`;
+    const id = `${userData.email}-${authedAt}`;
 
     const token = this.generateToken({ userData, isHashed: true, authedAt });
 
-    // await this.cacheManager.set(key, { ...userData, token }, AUTH_TTL);
     await Session.create({
-      key,
+      id,
       userId: userData.id,
       token,
       authedAt,
@@ -148,10 +145,10 @@ export class AppService {
       const user: UserType = decoded as UserType;
 
       if (user) {
-        const key = `${user.email}-${user.authedAt}`;
+        const id = `${user.email}-${user.authedAt}`;
 
         const userSession = await Session.findOne({
-          where: { key },
+          where: { id },
         });
 
         if (!userSession) {
@@ -183,9 +180,9 @@ export class AppService {
         const exp = (decoded as jwt.JwtPayload).exp || 0;
 
         if (exp < currentTime) {
-          const key = `${user.email}-${user.authedAt}`;
+          const id = `${user.email}-${user.authedAt}`;
           await Session.destroy({
-            where: { key },
+            where: { id },
           });
 
           // new hash token

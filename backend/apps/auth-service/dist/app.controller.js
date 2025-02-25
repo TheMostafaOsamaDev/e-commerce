@@ -28,7 +28,7 @@ let AppController = class AppController {
             lastName: user.lastName,
             isAdmin: false,
         };
-        const cachedUser = await this.appService.cacheSessions({ userData });
+        const cachedUser = await this.appService.createSession({ userData });
         const token = this.appService.generateToken({
             userData: cachedUser.user,
             isHashed: false,
@@ -48,7 +48,7 @@ let AppController = class AppController {
             lastName: user.lastName,
             isAdmin: false,
         };
-        const cachedUser = await this.appService.cacheSessions({ userData });
+        const cachedUser = await this.appService.createSession({ userData });
         const token = this.appService.generateToken({
             userData,
             isHashed: false,

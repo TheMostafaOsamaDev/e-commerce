@@ -8,22 +8,16 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppService = void 0;
 const common_1 = require("@nestjs/common");
-const user_model_1 = require("./user.model");
-const cache_manager_1 = require("@nestjs/cache-manager");
-const config_1 = require("./config");
+const user_model_1 = require("./models/user.model");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const microservices_1 = require("@nestjs/microservices");
+const session_model_1 = require("./models/session.model");
 let AppService = class AppService {
-    constructor(cacheManager) {
-        this.cacheManager = cacheManager;
-    }
+    constructor() { }
     async createUser(data) {
         const [user, _] = await user_model_1.User.findOrCreate({
             where: { email: data.email },
@@ -61,7 +55,6 @@ let AppService = class AppService {
             });
         }
         const userData = user.get({ plain: true });
-        console.log(userData);
         return {
             id: userData.id,
             email: userData.email,
@@ -69,11 +62,16 @@ let AppService = class AppService {
             lastName: userData.lastName,
         };
     }
-    async cacheSessions({ userData }) {
+    async createSession({ userData }) {
         const authedAt = new Date().toISOString();
-        const key = `${userData.email}-${authedAt}`;
+        const id = `${userData.email}-${authedAt}`;
         const token = this.generateToken({ userData, isHashed: true, authedAt });
-        await this.cacheManager.set(key, { ...userData, token }, config_1.AUTH_TTL);
+        await session_model_1.Session.create({
+            id,
+            userId: userData.id,
+            token,
+            authedAt,
+        });
         return {
             token,
             user: userData,
@@ -116,15 +114,16 @@ let AppService = class AppService {
             });
             const user = decoded;
             if (user) {
-                const key = `${user.email}-${user.authedAt}`;
-                const cachedUser = await this.cacheManager.get(key);
-                if (!cachedUser) {
+                const id = `${user.email}-${user.authedAt}`;
+                const userSession = await session_model_1.Session.findOne({
+                    where: { id },
+                });
+                if (!userSession) {
                     throw new microservices_1.RpcException({
                         statusCode: 401,
                         message: 'Unauthorized ~ no cached user',
                     });
                 }
-                console.log(cachedUser);
                 const userPayload = {
                     id: user.id,
                     email: user.email,
@@ -132,7 +131,7 @@ let AppService = class AppService {
                     lastName: user.lastName,
                     isAdmin: user.isAdmin,
                 };
-                const isMatched = this.compareToken(userPayload, cachedUser.token);
+                const isMatched = this.compareToken(userPayload, userSession.token);
                 if (!isMatched) {
                     throw new microservices_1.RpcException({
                         statusCode: 401,
@@ -142,25 +141,27 @@ let AppService = class AppService {
                 const currentTime = Math.floor(Date.now() / 1000);
                 const exp = decoded.exp || 0;
                 if (exp < currentTime) {
-                    const key = `${user.email}-${user.authedAt}`;
-                    await this.cacheManager.del(key);
-                    const newCachedUser = await this.cacheSessions({
+                    const id = `${user.email}-${user.authedAt}`;
+                    await session_model_1.Session.destroy({
+                        where: { id },
+                    });
+                    const newUserSession = await this.createSession({
                         userData: userPayload,
                     });
                     const newToken = this.generateToken({
                         userData: userPayload,
                         isHashed: false,
-                        authedAt: newCachedUser.authedAt,
+                        authedAt: newUserSession.authedAt,
                     });
                     return {
-                        data: newCachedUser.user,
+                        data: newUserSession.user,
                         token: newToken,
                         isNew: true,
                     };
                 }
                 else {
                     return {
-                        data: cachedUser,
+                        data: userPayload,
                         token,
                         isNew: false,
                     };
@@ -180,7 +181,6 @@ let AppService = class AppService {
 exports.AppService = AppService;
 exports.AppService = AppService = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, common_1.Inject)(cache_manager_1.CACHE_MANAGER)),
-    __metadata("design:paramtypes", [Object])
+    __metadata("design:paramtypes", [])
 ], AppService);
 //# sourceMappingURL=app.service.js.map

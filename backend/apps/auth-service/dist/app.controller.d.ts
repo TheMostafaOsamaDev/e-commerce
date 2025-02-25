@@ -6,7 +6,7 @@ export declare class AppController {
     constructor(appService: AppService);
     createAccount(data: CreateAuthDto): Promise<{
         token: string;
-        user: import("./user.model").UserType;
+        user: import("./models/user.model").UserType;
         authedAt: string;
     }>;
     signIn(data: SignInDto): Promise<{
