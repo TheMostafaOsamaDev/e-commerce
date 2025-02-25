@@ -19,7 +19,7 @@ let AuthInterceptor = class AuthInterceptor {
                 res.cookie('auth_token', body.token, {
                     httpOnly: true,
                     secure: process.env.NODE_ENV === 'production',
-                    maxAge: config_1.TOKEN_TIME,
+                    maxAge: config_1.COOKIE_TIME,
                 });
                 return body;
             }

@@ -22,6 +22,10 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useMutation } from "@tanstack/react-query";
+import { registerMutate } from "@/lib/api/auth.api";
+import { signal } from "@/lib/api";
+import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -40,12 +44,22 @@ export default function SignUpForm() {
       lastName: "",
     },
   });
+  const router = useRouter();
   const reigsterMutate = useMutation({
     mutationKey: ["register"],
+    mutationFn: registerMutate,
+    onSuccess: () => router.push("/"),
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+    const data = {
+      email: values.email,
+      password: values.password,
+      firstName: values.firstName,
+      lastName: values.lastName,
+    };
+
+    reigsterMutate.mutate({ data, signal });
   }
 
   return (
@@ -118,8 +132,18 @@ export default function SignUpForm() {
               )}
             />
 
-            <Button type="submit" className="w-full">
-              Submit
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={reigsterMutate.isPending}
+            >
+              {reigsterMutate.isPending ? (
+                <>
+                  <Loader2 className="animate-spin" /> Loading...
+                </>
+              ) : (
+                "Sign up"
+              )}
             </Button>
           </form>
         </Form>

@@ -20,7 +20,7 @@ export class AppController {
       isAdmin: false,
     };
 
-    const cachedUser = await this.appService.cacheSessions({ userData });
+    const cachedUser = await this.appService.createSession({ userData });
 
     const token = this.appService.generateToken({
       userData: cachedUser.user,
@@ -46,7 +46,7 @@ export class AppController {
       isAdmin: false,
     };
 
-    const cachedUser = await this.appService.cacheSessions({ userData });
+    const cachedUser = await this.appService.createSession({ userData });
 
     const token = this.appService.generateToken({
       userData,

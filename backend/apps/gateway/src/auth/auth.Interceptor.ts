@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { tap, map } from 'rxjs/operators';
-import { TOKEN_TIME } from 'src/config';
+import { COOKIE_TIME } from 'src/config';
 
 @Injectable()
 export class AuthInterceptor implements NestInterceptor {
@@ -23,7 +23,7 @@ export class AuthInterceptor implements NestInterceptor {
           res.cookie('auth_token', body.token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            maxAge: TOKEN_TIME,
+            maxAge: COOKIE_TIME,
           });
 
           return body;

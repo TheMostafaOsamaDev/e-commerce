@@ -11,6 +11,10 @@ async function bootstrap() {
     app.useGlobalPipes(new common_1.ValidationPipe());
     app.use(cookieParser());
     app.setGlobalPrefix('api/v1');
+    app.enableCors({
+        origin: process.env.FRONTEND_URL ?? 'http://localhost:3000',
+        credentials: true,
+    });
     app.connectMicroservice({
         transport: microservices_1.Transport.RMQ,
         options: {

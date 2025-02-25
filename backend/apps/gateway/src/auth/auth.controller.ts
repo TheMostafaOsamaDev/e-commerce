@@ -43,10 +43,12 @@ export class AuthController {
 
     if (user) {
       return res.status(200).send({
-        id: user.id,
-        email: user.email,
-        firstName: user.firstName,
-        lastName: user.lastName,
+        user: {
+          id: user.data.id,
+          email: user.data.email,
+          firstName: user.data.firstName,
+          lastName: user.data.lastName,
+        },
         token: user.isNew ? user.token : null,
       });
     }

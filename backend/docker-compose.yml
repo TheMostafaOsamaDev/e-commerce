@@ -63,36 +63,6 @@ services:
     networks:
       - e_commerce_network
 
-  redis:
-    image: redis:7
-    container_name: redis
-    restart: always
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis_data:/data
-    networks:
-      - e_commerce_network
-    command: ["redis-server", "--save", "60", "1", "--appendonly", "yes"]
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-  redis-commander:
-    image: rediscommander/redis-commander:latest
-    container_name: redis_commander
-    restart: always
-    ports:
-      - "8081:8081"
-    environment:
-      - REDIS_HOSTS=local:redis:6379
-    depends_on:
-      - redis
-    networks:
-      - e_commerce_network
-
   auth-service:
     build: ./apps/auth-service
     container_name: auth_service
@@ -105,8 +75,6 @@ services:
       - DB_NAME=e_commerce
       - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672
       - RABBITMQ_QUEUE=auth_queue
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
     volumes:
       - ./apps/auth-service:/app
       - /app/node_modules
@@ -115,8 +83,6 @@ services:
       rabbitmq:
         condition: service_healthy
       e_commerce_db:
-        condition: service_healthy
-      redis:
         condition: service_healthy
     networks:
       - e_commerce_network
@@ -136,15 +102,12 @@ services:
       - DB_NAME=e_commerce
       - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672
       - RABBITMQ_QUEUE=gateway_queue
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
     volumes:
       - ./apps/gateway:/app
       - /app/node_modules
     command: sh -c "sleep 20 && npm run start:dev"
     depends_on:
       - auth-service
-      - redis
     networks:
       - e_commerce_network
     restart: on-failure
@@ -159,8 +122,6 @@ volumes:
   rabbitmq_data:
     driver: local
   mysql_data:
-    driver: local
-  redis_data:
     driver: local
 
 networks:

@@ -81,7 +81,7 @@ let AppService = class AppService {
         };
     }
     generateToken({ userData, isHashed, authedAt, }) {
-        const expiresIn = config_1.AUTH_TTL | config_1.TOKEN_TIME;
+        const expiresIn = 0;
         const TOKEN_SECRET = isHashed
             ? process.env.TOKEN_SECRET
             : process.env.CLIENT_TOKEN_SECRET;
@@ -121,14 +121,10 @@ let AppService = class AppService {
                 if (!cachedUser) {
                     throw new microservices_1.RpcException({
                         statusCode: 401,
-                        message: 'Unauthorized',
+                        message: 'Unauthorized ~ no cached user',
                     });
                 }
                 console.log(cachedUser);
-                console.log({
-                    token,
-                    cachedToken: cachedUser.token,
-                });
                 const userPayload = {
                     id: user.id,
                     email: user.email,
@@ -140,7 +136,7 @@ let AppService = class AppService {
                 if (!isMatched) {
                     throw new microservices_1.RpcException({
                         statusCode: 401,
-                        message: 'Unauthorized',
+                        message: 'Unauthorized ~ token mismatch',
                     });
                 }
                 const currentTime = Math.floor(Date.now() / 1000);
@@ -157,14 +153,14 @@ let AppService = class AppService {
                         authedAt: newCachedUser.authedAt,
                     });
                     return {
-                        ...newCachedUser,
+                        data: newCachedUser.user,
                         token: newToken,
                         isNew: true,
                     };
                 }
                 else {
                     return {
-                        ...cachedUser,
+                        data: cachedUser,
                         token,
                         isNew: false,
                     };
@@ -176,7 +172,7 @@ let AppService = class AppService {
             console.log(e);
             throw new microservices_1.RpcException({
                 statusCode: 401,
-                message: 'Invalid token',
+                message: e.message,
             });
         }
     }

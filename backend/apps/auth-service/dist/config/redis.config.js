@@ -9,8 +9,8 @@ exports.RedisOptions = {
     useFactory: async (configService) => {
         const store = await (0, cache_manager_redis_store_1.redisStore)({
             socket: {
-                host: configService.get(process.env.REDIS_HOST),
-                port: parseInt(configService.get(process.env.REDIS_PORT)),
+                host: configService.get('REDIS_HOST'),
+                port: parseInt(configService.get('REDIS_PORT')),
             },
         });
         return {
