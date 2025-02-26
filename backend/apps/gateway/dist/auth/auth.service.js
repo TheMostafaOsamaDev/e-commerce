@@ -28,6 +28,11 @@ let AuthService = class AuthService {
     }
     async verifyToken(req) {
         const authToken = req.headers['auth_token'];
+        console.log(req.cookies);
+        if (!authToken) {
+            console.log(`No token provided`);
+            throw new common_1.BadRequestException('No token provided');
+        }
         const data = await (0, rxjs_1.lastValueFrom)(this.authClient.send({ cmd: 'verify_token' }, authToken));
         return data;
     }

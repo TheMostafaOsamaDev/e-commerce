@@ -20,8 +20,8 @@ export class AuthInterceptor implements NestInterceptor {
     return next.handle().pipe(
       tap((body) => {
         // Log Response body
-        console.log(res);
         if (body && body.token) {
+          console.log(body.token);
           res.cookie('auth_token', body.token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',

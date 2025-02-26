@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
 import { Request, Response } from 'express';
@@ -20,6 +20,13 @@ export class AuthService {
 
   async verifyToken(req: Request) {
     const authToken = req.headers['auth_token'];
+
+    console.log(req.cookies);
+
+    if (!authToken) {
+      console.log(`No token provided`);
+      throw new BadRequestException('No token provided');
+    }
 
     const data = await lastValueFrom(
       this.authClient.send({ cmd: 'verify_token' }, authToken),

@@ -22,8 +22,8 @@ async function bootstrap() {
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.RMQ,
     options: {
-      urls: [RABBITMQ_URL], // RabbitMQ connection
-      queue: process.env.GATEWAY_QUEUE! ?? 'gateway_queue', // Gateway queue
+      urls: [RABBITMQ_URL],
+      queue: process.env.GATEWAY_QUEUE! ?? 'gateway_queue',
       queueOptions: {
         durable: false,
       },
