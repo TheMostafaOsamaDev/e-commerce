@@ -31,10 +31,10 @@ let AuthController = class AuthController {
     async signIn(data) {
         return this.authClient.send({ cmd: 'sign_in' }, data);
     }
-    async verify(req, res) {
+    async verify(req) {
         const user = req.verifiedUser;
         if (user) {
-            return res.status(200).send({
+            return {
                 user: {
                     id: user.data.id,
                     email: user.data.email,
@@ -42,12 +42,9 @@ let AuthController = class AuthController {
                     lastName: user.data.lastName,
                 },
                 token: user.isNew ? user.token : null,
-            });
+            };
         }
-        res.status(401).send({
-            message: 'Unauthorized',
-            status: 401,
-        });
+        throw new common_1.UnauthorizedException('Unauthorized');
     }
 };
 exports.AuthController = AuthController;
@@ -72,9 +69,8 @@ __decorate([
     (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
     (0, common_1.UseInterceptors)(auth_Interceptor_1.AuthInterceptor),
     __param(0, (0, common_1.Req)()),
-    __param(1, (0, common_1.Res)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "verify", null);
 exports.AuthController = AuthController = __decorate([

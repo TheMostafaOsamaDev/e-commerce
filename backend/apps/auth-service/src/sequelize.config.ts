@@ -1,5 +1,6 @@
 import { Sequelize } from 'sequelize-typescript';
 import { User } from './models/user.model'; // Import your User model
+import { Session } from './models/session.model';
 
 export const sequelize = new Sequelize({
   database: process.env.DB_NAME,
@@ -8,6 +9,6 @@ export const sequelize = new Sequelize({
   host: process.env.DB_HOST,
   port: Number(process.env.DB_PORT) || 3306,
   dialect: 'mysql',
-  models: [User], // Register your models
+  models: [User, Session], // Register your models
   logging: false, // Disable logs (set to true for debugging)
 });

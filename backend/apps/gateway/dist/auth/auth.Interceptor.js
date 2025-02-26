@@ -15,6 +15,7 @@ let AuthInterceptor = class AuthInterceptor {
         const ctx = context.switchToHttp();
         const res = ctx.getResponse();
         return next.handle().pipe((0, operators_1.tap)((body) => {
+            console.log(res);
             if (body && body.token) {
                 res.cookie('auth_token', body.token, {
                     httpOnly: true,

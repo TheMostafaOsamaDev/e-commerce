@@ -10,45 +10,50 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Session = void 0;
-const sequelize_1 = require("sequelize");
-const sequelize_2 = require("sequelize");
-const sequelize_3 = require("sequelize");
 const sequelize_typescript_1 = require("sequelize-typescript");
 const user_model_1 = require("./user.model");
-let Session = class Session extends sequelize_3.Model {
+let Session = class Session extends sequelize_typescript_1.Model {
 };
 exports.Session = Session;
 __decorate([
     sequelize_typescript_1.PrimaryKey,
-    (0, sequelize_typescript_1.Column)({
-        type: sequelize_1.STRING,
-        allowNull: false,
-    }),
+    (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.STRING),
     __metadata("design:type", String)
 ], Session.prototype, "id", void 0);
 __decorate([
     (0, sequelize_typescript_1.ForeignKey)(() => user_model_1.User),
     (0, sequelize_typescript_1.Column)({
-        type: sequelize_2.UUID,
+        type: sequelize_typescript_1.DataType.UUID,
         allowNull: false,
     }),
-    (0, sequelize_typescript_1.BelongsTo)(() => user_model_1.User),
     __metadata("design:type", String)
 ], Session.prototype, "userId", void 0);
 __decorate([
     (0, sequelize_typescript_1.Column)({
-        type: sequelize_1.STRING,
+        type: sequelize_typescript_1.DataType.STRING,
         allowNull: false,
     }),
     __metadata("design:type", String)
 ], Session.prototype, "token", void 0);
 __decorate([
     (0, sequelize_typescript_1.Column)({
-        type: sequelize_1.STRING,
+        type: sequelize_typescript_1.DataType.STRING,
         allowNull: false,
     }),
     __metadata("design:type", String)
 ], Session.prototype, "authedAt", void 0);
+__decorate([
+    (0, sequelize_typescript_1.BelongsTo)(() => user_model_1.User),
+    __metadata("design:type", user_model_1.User)
+], Session.prototype, "user", void 0);
+__decorate([
+    (0, sequelize_typescript_1.Column)({
+        type: sequelize_typescript_1.DataType.DATE,
+        allowNull: false,
+        defaultValue: sequelize_typescript_1.DataType.NOW,
+    }),
+    __metadata("design:type", Date)
+], Session.prototype, "lastAuthedAt", void 0);
 exports.Session = Session = __decorate([
     (0, sequelize_typescript_1.Table)({ tableName: 'sessions' })
 ], Session);

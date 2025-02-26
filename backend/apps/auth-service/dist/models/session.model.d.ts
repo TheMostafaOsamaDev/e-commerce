@@ -1,9 +1,12 @@
-import { Model } from 'sequelize';
-export declare class Session extends Model<Session, Pick<Session, 'id' | 'userId' | 'token' | 'authedAt'>> {
+import { Model } from 'sequelize-typescript';
+import { User } from './user.model';
+export declare class Session extends Model {
     id: string;
     userId: string;
     token: string;
     authedAt: string;
+    user: User;
+    lastAuthedAt: Date;
 }
 export type SessionType = {
     key: string;

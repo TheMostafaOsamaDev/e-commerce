@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { User, UserType } from './models/user.model';
-import { AUTH_TTL } from './config';
+import { AUTH_TTL, TOKEN_TIME } from './config';
 import * as jwt from 'jsonwebtoken';
 import * as bcrypt from 'bcryptjs';
 import { SignInDto } from './dto/sign-in.dto';
@@ -96,7 +96,7 @@ export class AppService {
     isHashed: boolean;
     authedAt: string;
   }) {
-    const expiresIn = 0;
+    const expiresIn = isHashed ? AUTH_TTL : TOKEN_TIME;
     const TOKEN_SECRET = isHashed
       ? process.env.TOKEN_SECRET!
       : process.env.CLIENT_TOKEN_SECRET!;
@@ -178,6 +178,10 @@ export class AppService {
         // check expiration
         const currentTime = Math.floor(Date.now() / 1000);
         const exp = (decoded as jwt.JwtPayload).exp || 0;
+
+        // Update last authed
+        userSession.lastAuthedAt = new Date();
+        await userSession.save();
 
         if (exp < currentTime) {
           const id = `${user.email}-${user.authedAt}`;

@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppService = void 0;
 const common_1 = require("@nestjs/common");
 const user_model_1 = require("./models/user.model");
+const config_1 = require("./config");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const microservices_1 = require("@nestjs/microservices");
@@ -79,7 +80,7 @@ let AppService = class AppService {
         };
     }
     generateToken({ userData, isHashed, authedAt, }) {
-        const expiresIn = 0;
+        const expiresIn = isHashed ? config_1.AUTH_TTL : config_1.TOKEN_TIME;
         const TOKEN_SECRET = isHashed
             ? process.env.TOKEN_SECRET
             : process.env.CLIENT_TOKEN_SECRET;
@@ -140,6 +141,8 @@ let AppService = class AppService {
                 }
                 const currentTime = Math.floor(Date.now() / 1000);
                 const exp = decoded.exp || 0;
+                userSession.lastAuthedAt = new Date();
+                await userSession.save();
                 if (exp < currentTime) {
                     const id = `${user.email}-${user.authedAt}`;
                     await session_model_1.Session.destroy({

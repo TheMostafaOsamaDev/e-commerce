@@ -1,46 +1,48 @@
-import { STRING } from 'sequelize';
-import { UUID } from 'sequelize';
-import { Model } from 'sequelize';
 import {
+  Table,
   Column,
+  Model,
   ForeignKey,
   BelongsTo,
   PrimaryKey,
-  Table,
+  DataType,
 } from 'sequelize-typescript';
 import { User } from './user.model';
 
 @Table({ tableName: 'sessions' })
-export class Session extends Model<
-  Session,
-  Pick<Session, 'id' | 'userId' | 'token' | 'authedAt'>
-> {
+export class Session extends Model {
   @PrimaryKey
-  @Column({
-    type: STRING,
-    allowNull: false,
-  })
-  id: string;
+  @Column(DataType.STRING)
+  id!: string;
 
   @ForeignKey(() => User)
   @Column({
-    type: UUID,
+    type: DataType.UUID,
     allowNull: false,
   })
-  @BelongsTo(() => User)
   userId: string;
 
   @Column({
-    type: STRING,
+    type: DataType.STRING,
     allowNull: false,
   })
   token: string;
 
   @Column({
-    type: STRING,
+    type: DataType.STRING,
     allowNull: false,
   })
   authedAt: string;
+
+  @BelongsTo(() => User)
+  user: User;
+
+  @Column({
+    type: DataType.DATE,
+    allowNull: false,
+    defaultValue: DataType.NOW,
+  })
+  lastAuthedAt: Date;
 }
 
 export type SessionType = {

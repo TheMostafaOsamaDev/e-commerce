@@ -5,6 +5,7 @@ import {
   Post,
   Req,
   Res,
+  UnauthorizedException,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -38,11 +39,11 @@ export class AuthController {
   @Post('verify')
   @UseGuards(AuthGuard)
   @UseInterceptors(AuthInterceptor)
-  async verify(@Req() req: Request, @Res() res: Response) {
+  async verify(@Req() req: Request) {
     const user = req.verifiedUser;
 
     if (user) {
-      return res.status(200).send({
+      return {
         user: {
           id: user.data.id,
           email: user.data.email,
@@ -50,12 +51,9 @@ export class AuthController {
           lastName: user.data.lastName,
         },
         token: user.isNew ? user.token : null,
-      });
+      };
     }
 
-    res.status(401).send({
-      message: 'Unauthorized',
-      status: 401,
-    });
+    throw new UnauthorizedException('Unauthorized');
   }
 }
