@@ -1,6 +1,6 @@
 import { createDecipheriv, createHash } from "crypto";
 import { ENCRYPTION_KEY } from "@/config";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export function decryptData(encryptedData: string) {
   const [ivHex, encryptedHex] = encryptedData.split(":");
@@ -16,7 +16,7 @@ export function decryptData(encryptedData: string) {
   return JSON.parse(decrypted.toString());
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   const { encryptedData } = await request.json();
 
   const decryptedData = decryptData(encryptedData);
