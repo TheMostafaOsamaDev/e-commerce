@@ -3,20 +3,8 @@ import { Button } from "../ui/button";
 import Link from "next/link";
 import {
   ShoppingBasket,
-  Cloud,
-  CreditCard,
-  Github,
-  Keyboard,
-  LifeBuoy,
-  LogOut,
-  Mail,
-  MessageSquare,
-  Plus,
-  PlusCircle,
   Settings,
   User,
-  UserPlus,
-  Users,
   User2,
   LogOutIcon,
 } from "lucide-react";

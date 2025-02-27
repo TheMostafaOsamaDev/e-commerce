@@ -61,7 +61,13 @@ export default async function middleware(request: NextRequest) {
       }
     }
   } catch (error) {
-    console.error("Middleware error:", error);
+    // Delete cookies
+    const response = NextResponse.next({});
+
+    response.cookies.delete("auth_token");
+    response.cookies.delete(USER_DATA_COOKIE_NAME);
+
+    return response;
   }
 
   return NextResponse.next({});

@@ -44,7 +44,14 @@ let AuthController = class AuthController {
                 token: user.isNew ? user.token : null,
             };
         }
+        console.log('User: ');
+        console.log(user);
         throw new common_1.UnauthorizedException('Unauthorized');
+    }
+    async signOut(req, res) {
+        const user = req.verifiedUser;
+        console.log(user);
+        return res.send('Testing phase');
     }
 };
 exports.AuthController = AuthController;
@@ -73,6 +80,15 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "verify", null);
+__decorate([
+    (0, common_1.Delete)('sign-out'),
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "signOut", null);
 exports.AuthController = AuthController = __decorate([
     (0, common_1.Controller)('auth'),
     __param(1, (0, common_1.Inject)('AUTH_SERVICE')),

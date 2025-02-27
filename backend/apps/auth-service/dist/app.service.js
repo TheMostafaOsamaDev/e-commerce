@@ -116,6 +116,7 @@ let AppService = class AppService {
             const user = decoded;
             if (user) {
                 const id = `${user.email}-${user.authedAt}`;
+                console.log(`ID: ${id}`);
                 const userSession = await session_model_1.Session.findOne({
                     where: { id },
                 });
@@ -173,7 +174,6 @@ let AppService = class AppService {
             return decoded;
         }
         catch (e) {
-            console.log(e);
             throw new microservices_1.RpcException({
                 statusCode: 401,
                 message: e.message,

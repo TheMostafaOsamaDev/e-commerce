@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Inject,
   Post,
   Req,
@@ -54,6 +55,19 @@ export class AuthController {
       };
     }
 
+    console.log('User: ');
+    console.log(user);
+
     throw new UnauthorizedException('Unauthorized');
+  }
+
+  @Delete('sign-out')
+  @UseGuards(AuthGuard)
+  async signOut(@Req() req: Request, @Res() res: Response) {
+    const user = req.verifiedUser;
+
+    console.log(user);
+
+    return res.send('Testing phase');
   }
 }

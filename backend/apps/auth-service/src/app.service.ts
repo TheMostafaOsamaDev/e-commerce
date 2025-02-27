@@ -147,6 +147,8 @@ export class AppService {
       if (user) {
         const id = `${user.email}-${user.authedAt}`;
 
+        console.log(`ID: ${id}`);
+
         const userSession = await Session.findOne({
           where: { id },
         });
@@ -216,7 +218,6 @@ export class AppService {
 
       return decoded;
     } catch (e) {
-      console.log(e);
       throw new RpcException({
         statusCode: 401,
         message: e.message,
