@@ -61,6 +61,7 @@ export default async function middleware(request: NextRequest) {
       }
     }
   } catch (error) {
+    console.log("~~~ Middleware error ~~~");
     // Delete cookies
     const response = NextResponse.next({});
 

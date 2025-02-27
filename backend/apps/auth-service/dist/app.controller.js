@@ -15,6 +15,7 @@ const app_service_1 = require("./app.service");
 const microservices_1 = require("@nestjs/microservices");
 const create_auth_dto_1 = require("./dto/create-auth.dto");
 const sign_in_dto_1 = require("./dto/sign-in.dto");
+const jwt = require("jsonwebtoken");
 let AppController = class AppController {
     constructor(appService) {
         this.appService = appService;
@@ -62,6 +63,17 @@ let AppController = class AppController {
     async verifyToken(token) {
         return this.appService.verifyToken(token);
     }
+    async logoutUser(token) {
+        if (!token) {
+            throw new microservices_1.RpcException({
+                code: 401,
+                message: 'Unauthorized',
+            });
+        }
+        const decodedUser = jwt.decode(token);
+        if (decodedUser?.email && decodedUser?.authedAt)
+            await this.appService.destroySession(decodedUser.email, decodedUser.authedAt);
+    }
 };
 exports.AppController = AppController;
 __decorate([
@@ -82,6 +94,12 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], AppController.prototype, "verifyToken", null);
+__decorate([
+    (0, microservices_1.EventPattern)('signout_user'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], AppController.prototype, "logoutUser", null);
 exports.AppController = AppController = __decorate([
     (0, common_1.Controller)(),
     __metadata("design:paramtypes", [app_service_1.AppService])

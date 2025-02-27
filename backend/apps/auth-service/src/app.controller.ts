@@ -1,8 +1,13 @@
 import { Controller } from '@nestjs/common';
 import { AppService } from './app.service';
-import { MessagePattern } from '@nestjs/microservices';
+import {
+  EventPattern,
+  MessagePattern,
+  RpcException,
+} from '@nestjs/microservices';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { SignInDto } from './dto/sign-in.dto';
+import * as jwt from 'jsonwebtoken';
 
 @Controller()
 export class AppController {
@@ -63,5 +68,26 @@ export class AppController {
   @MessagePattern({ cmd: 'verify_token' })
   async verifyToken(token: string) {
     return this.appService.verifyToken(token);
+  }
+
+  @EventPattern('signout_user')
+  async logoutUser(token: string) {
+    if (!token) {
+      throw new RpcException({
+        code: 401,
+        message: 'Unauthorized',
+      });
+    }
+
+    const decodedUser = jwt.decode(token) as {
+      email: string;
+      authedAt: string;
+    };
+
+    if (decodedUser?.email && decodedUser?.authedAt)
+      await this.appService.destroySession(
+        decodedUser.email,
+        decodedUser.authedAt,
+      );
   }
 }

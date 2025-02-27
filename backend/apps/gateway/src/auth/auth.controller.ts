@@ -55,9 +55,6 @@ export class AuthController {
       };
     }
 
-    console.log('User: ');
-    console.log(user);
-
     throw new UnauthorizedException('Unauthorized');
   }
 
@@ -66,8 +63,11 @@ export class AuthController {
   async signOut(@Req() req: Request, @Res() res: Response) {
     const user = req.verifiedUser;
 
-    console.log(user);
+    this.authClient.emit('signout_user', user.token);
 
-    return res.send('Testing phase');
+    res.clearCookie('auth_token');
+    res.clearCookie('sh_data');
+
+    return res.send('Signed out');
   }
 }

@@ -180,6 +180,15 @@ let AppService = class AppService {
             });
         }
     }
+    async destroySession(email, authedAt) {
+        const id = `${email}-${authedAt}`;
+        await session_model_1.Session.destroy({
+            where: { id },
+        });
+        return {
+            message: 'Session destroyed',
+        };
+    }
 };
 exports.AppService = AppService;
 exports.AppService = AppService = __decorate([

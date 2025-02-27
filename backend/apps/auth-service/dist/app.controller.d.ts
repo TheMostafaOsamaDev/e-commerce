@@ -1,6 +1,7 @@
 import { AppService } from './app.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { SignInDto } from './dto/sign-in.dto';
+import * as jwt from 'jsonwebtoken';
 export declare class AppController {
     private readonly appService;
     constructor(appService: AppService);
@@ -18,5 +19,6 @@ export declare class AppController {
         };
         token: string;
     }>;
-    verifyToken(token: string): Promise<string | import("jsonwebtoken").JwtPayload>;
+    verifyToken(token: string): Promise<string | jwt.JwtPayload>;
+    logoutUser(token: string): Promise<void>;
 }

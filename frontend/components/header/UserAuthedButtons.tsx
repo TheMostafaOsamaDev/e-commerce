@@ -16,6 +16,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import SignOutButton from "./SignOutButton";
 
 export default function UserAuthedButtons({
   userData,
@@ -41,9 +42,7 @@ export default function UserAuthedButtons({
             <Settings /> Settings
           </DropdownMenuItem>
 
-          <DropdownMenuItem className="text-red-500 hover:bg-red-600">
-            <LogOutIcon /> Logout
-          </DropdownMenuItem>
+          <SignOutButton />
         </DropdownMenuContent>
       </DropdownMenu>
 

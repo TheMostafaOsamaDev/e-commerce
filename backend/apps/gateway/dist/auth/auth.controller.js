@@ -44,14 +44,14 @@ let AuthController = class AuthController {
                 token: user.isNew ? user.token : null,
             };
         }
-        console.log('User: ');
-        console.log(user);
         throw new common_1.UnauthorizedException('Unauthorized');
     }
     async signOut(req, res) {
         const user = req.verifiedUser;
-        console.log(user);
-        return res.send('Testing phase');
+        this.authClient.emit('signout_user', user.token);
+        res.clearCookie('auth_token');
+        res.clearCookie('sh_data');
+        return res.send('Signed out');
     }
 };
 exports.AuthController = AuthController;

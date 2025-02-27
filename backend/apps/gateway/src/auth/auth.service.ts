@@ -21,8 +21,6 @@ export class AuthService {
   async verifyToken(req: Request) {
     const authToken = req.headers['auth_token'];
 
-    console.log(`Token: ${authToken}`);
-
     if (!authToken) {
       throw new BadRequestException('No token provided');
     }

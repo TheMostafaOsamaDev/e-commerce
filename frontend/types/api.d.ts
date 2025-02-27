@@ -4,3 +4,8 @@ type RegisterType = {
   email: string;
   password: string;
 };
+
+type SignInType = {
+  email: string;
+  password: string;
+};

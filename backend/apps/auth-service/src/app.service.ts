@@ -224,4 +224,16 @@ export class AppService {
       });
     }
   }
+
+  async destroySession(email: string, authedAt: string) {
+    const id = `${email}-${authedAt}`;
+
+    await Session.destroy({
+      where: { id },
+    });
+
+    return {
+      message: 'Session destroyed',
+    };
+  }
 }

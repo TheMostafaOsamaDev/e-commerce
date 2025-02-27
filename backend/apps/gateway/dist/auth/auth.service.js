@@ -28,7 +28,6 @@ let AuthService = class AuthService {
     }
     async verifyToken(req) {
         const authToken = req.headers['auth_token'];
-        console.log(`Token: ${authToken}`);
         if (!authToken) {
             throw new common_1.BadRequestException('No token provided');
         }

@@ -30,4 +30,7 @@ export declare class AppService {
     }): string;
     compareToken(userData: UserType, hashedToken: string): boolean;
     verifyToken(token: string): Promise<string | jwt.JwtPayload>;
+    destroySession(email: string, authedAt: string): Promise<{
+        message: string;
+    }>;
 }

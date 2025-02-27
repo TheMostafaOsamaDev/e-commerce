@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useMutation } from "@tanstack/react-query";
-import { registerMutateFn } from "@/lib/api/auth.api";
+import { signInMutateFn } from "@/lib/api/auth.api";
 import { signal } from "@/lib/api";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -33,8 +33,6 @@ import { tanstackGlobalErrorHandler } from "@/helpers";
 const formSchema = z.object({
   email: z.string().email(),
   password: passwordSchema,
-  firstName: z.string().min(2).max(50),
-  lastName: z.string().min(2).max(50),
 });
 
 export default function SignUpForm() {
@@ -43,14 +41,12 @@ export default function SignUpForm() {
     defaultValues: {
       email: "",
       password: "",
-      firstName: "",
-      lastName: "",
     },
   });
   const router = useRouter();
-  const reigsterMutate = useMutation({
-    mutationKey: ["sign-up"],
-    mutationFn: registerMutateFn,
+  const signInMutate = useMutation({
+    mutationKey: ["sign-in"],
+    mutationFn: signInMutateFn,
     onSuccess: () => router.push("/"),
     onError: tanstackGlobalErrorHandler,
   });
@@ -59,50 +55,20 @@ export default function SignUpForm() {
     const data = {
       email: values.email,
       password: values.password,
-      firstName: values.firstName,
-      lastName: values.lastName,
     };
 
-    reigsterMutate.mutate({ data, signal });
+    signInMutate.mutate({ data, signal });
   }
 
   return (
     <Card className="w-[350px] xl:w-[450px] mx-auto">
       <CardHeader>
-        <CardTitle className="text-2xl">Sign up</CardTitle>
-        <CardDescription>Sign up to Shoop! to start shopping</CardDescription>
+        <CardTitle className="text-2xl">Sign in</CardTitle>
+        <CardDescription>Sign in to Shoop! to start shopping</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
-            <FormField
-              control={form.control}
-              name="firstName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>First Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="John" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="lastName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Last Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Doe" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
             <FormField
               control={form.control}
               name="email"
@@ -139,14 +105,14 @@ export default function SignUpForm() {
             <Button
               type="submit"
               className="w-full"
-              disabled={reigsterMutate.isPending}
+              disabled={signInMutate.isPending}
             >
-              {reigsterMutate.isPending ? (
+              {signInMutate.isPending ? (
                 <>
                   <Loader2 className="animate-spin" /> Loading...
                 </>
               ) : (
-                "Sign up"
+                "Sign in"
               )}
             </Button>
           </form>
@@ -155,9 +121,9 @@ export default function SignUpForm() {
 
       <CardFooter>
         <p className="text-center text-sm">
-          Already have an account?{" "}
+          Don't have an account?{" "}
           <Button variant={"link"} asChild>
-            <Link href="/sign-in">Sign in</Link>
+            <Link href="/sign-up">Sign up</Link>
           </Button>
         </p>
       </CardFooter>
