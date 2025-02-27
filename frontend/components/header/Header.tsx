@@ -3,6 +3,7 @@ import Logo from "./Logo";
 import SearchInput from "./SearchInput";
 import UserButtons from "./UserButtons";
 import { getUserData } from "@/actions/auth.actions";
+import UserAuthedButtons from "./UserAuthedButtons";
 
 export default async function Header() {
   const userData = await getUserData();
@@ -14,7 +15,11 @@ export default async function Header() {
 
         <SearchInput classname="flex-1 w-full" />
 
-        <UserButtons />
+        {!userData ? (
+          <UserButtons />
+        ) : (
+          <UserAuthedButtons userData={userData} />
+        )}
       </div>
     </header>
   );
