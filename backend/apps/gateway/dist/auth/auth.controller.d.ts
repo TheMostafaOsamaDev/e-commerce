@@ -3,6 +3,7 @@ import { ClientProxy } from '@nestjs/microservices';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { SignInDto } from './dto/sign-in.dto';
 import { Request, Response } from 'express';
+import { UpdateAuthDto } from './dto/update-auth.dto';
 export declare class AuthController {
     private readonly authService;
     private readonly authClient;
@@ -19,4 +20,9 @@ export declare class AuthController {
         token: string | null;
     }>;
     signOut(req: Request, res: Response): Promise<Response<any, Record<string, any>>>;
+    updateAccount(req: Request, data: UpdateAuthDto): Promise<{
+        data: UserType;
+        isNew: boolean;
+        token: string;
+    }>;
 }

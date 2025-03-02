@@ -20,6 +20,7 @@ const create_auth_dto_1 = require("./dto/create-auth.dto");
 const auth_Interceptor_1 = require("./auth.Interceptor");
 const sign_in_dto_1 = require("./dto/sign-in.dto");
 const auth_guard_1 = require("./auth.guard");
+const update_auth_dto_1 = require("./dto/update-auth.dto");
 let AuthController = class AuthController {
     constructor(authService, authClient) {
         this.authService = authService;
@@ -48,10 +49,20 @@ let AuthController = class AuthController {
     }
     async signOut(req, res) {
         const user = req.verifiedUser;
-        this.authClient.emit('signout_user', user.token);
-        res.clearCookie('auth_token');
-        res.clearCookie('sh_data');
+        try {
+            this.authClient.emit('signout_user', user.token);
+            res.clearCookie('auth_token');
+            res.clearCookie('sh_data');
+        }
+        catch (error) {
+            console.log(error);
+        }
         return res.send('Signed out');
+    }
+    async updateAccount(req, data) {
+        const user = req.verifiedUser;
+        console.log(user);
+        return user;
     }
 };
 exports.AuthController = AuthController;
@@ -89,6 +100,16 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "signOut", null);
+__decorate([
+    (0, common_1.Patch)('update'),
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
+    (0, common_1.UseInterceptors)(auth_Interceptor_1.AuthInterceptor),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, update_auth_dto_1.UpdateAuthDto]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "updateAccount", null);
 exports.AuthController = AuthController = __decorate([
     (0, common_1.Controller)('auth'),
     __param(1, (0, common_1.Inject)('AUTH_SERVICE')),

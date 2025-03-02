@@ -29,6 +29,7 @@ import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { tanstackGlobalErrorHandler } from "@/helpers";
+import { register } from "module";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -139,7 +140,7 @@ export default function SignUpForm() {
             <Button
               type="submit"
               className="w-full"
-              disabled={reigsterMutate.isPending}
+              disabled={reigsterMutate.isPending || reigsterMutate.isSuccess}
             >
               {reigsterMutate.isPending ? (
                 <>

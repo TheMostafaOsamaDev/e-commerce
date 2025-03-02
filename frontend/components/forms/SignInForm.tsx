@@ -105,7 +105,7 @@ export default function SignUpForm() {
             <Button
               type="submit"
               className="w-full"
-              disabled={signInMutate.isPending}
+              disabled={signInMutate.isPending || signInMutate.isSuccess}
             >
               {signInMutate.isPending ? (
                 <>

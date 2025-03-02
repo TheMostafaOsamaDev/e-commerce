@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Inject,
+  Patch,
   Post,
   Req,
   Res,
@@ -17,6 +18,7 @@ import { AuthInterceptor } from './auth.Interceptor';
 import { SignInDto } from './dto/sign-in.dto';
 import { Request, Response } from 'express';
 import { AuthGuard } from './auth.guard';
+import { UpdateAuthDto } from './dto/update-auth.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -63,11 +65,28 @@ export class AuthController {
   async signOut(@Req() req: Request, @Res() res: Response) {
     const user = req.verifiedUser;
 
-    this.authClient.emit('signout_user', user.token);
+    try {
+      this.authClient.emit('signout_user', user.token);
 
-    res.clearCookie('auth_token');
-    res.clearCookie('sh_data');
+      res.clearCookie('auth_token');
+      res.clearCookie('sh_data');
+    } catch (error) {
+      console.log(error);
+    }
 
     return res.send('Signed out');
+  }
+
+  @Patch('update')
+  @UseGuards(AuthGuard)
+  @UseInterceptors(AuthInterceptor)
+  async updateAccount(@Req() req: Request, @Body() data: UpdateAuthDto) {
+    const user = req.verifiedUser;
+
+    // return this.authClient.send({ cmd: 'update_account' }, { user, data });
+
+    console.log(user);
+
+    return user;
   }
 }

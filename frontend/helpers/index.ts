@@ -5,8 +5,6 @@ export const formatAxiosError = (error: AxiosError<any>): any => {
   const res =
     error.response?.data || error.response?.data?.message || error.message;
 
-  console.log(res);
-
   if (typeof res === "string") {
     finalMessage = res;
   } else if (typeof res.data === "string") {

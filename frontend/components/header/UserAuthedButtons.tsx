@@ -34,8 +34,10 @@ export default function UserAuthedButtons({
         <DropdownMenuContent className="w-56">
           <DropdownMenuLabel>{`${userData.firstName} ${userData.lastName}`}</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>
-            <User /> Profile
+          <DropdownMenuItem asChild>
+            <Link href="/profile">
+              <User /> Profile
+            </Link>
           </DropdownMenuItem>
 
           <DropdownMenuItem>
