@@ -91,7 +91,9 @@ export default function UpdateUserDataForm({
                 </FormItem>
               )}
             />
-            <Button type="submit">Update profile</Button>
+            <Button type="submit" className="w-full">
+              Update profile
+            </Button>
           </form>
         </Form>
       </CardContent>

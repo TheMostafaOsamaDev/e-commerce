@@ -26,7 +26,6 @@ import { useMutation } from "@tanstack/react-query";
 import { signInMutateFn } from "@/lib/api/auth.api";
 import { signal } from "@/lib/api";
 import { Loader2 } from "lucide-react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { tanstackGlobalErrorHandler } from "@/helpers";
 
@@ -43,21 +42,21 @@ export default function SignUpForm() {
       password: "",
     },
   });
-  const router = useRouter();
   const signInMutate = useMutation({
     mutationKey: ["sign-in"],
     mutationFn: signInMutateFn,
-    onSuccess: () => router.push("/"),
     onError: tanstackGlobalErrorHandler,
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     const data = {
       email: values.email,
       password: values.password,
     };
 
-    signInMutate.mutate({ data, signal });
+    await signInMutate.mutateAsync({ data, signal });
+
+    window.location.reload();
   }
 
   return (

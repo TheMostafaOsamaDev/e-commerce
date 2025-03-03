@@ -26,10 +26,8 @@ import { useMutation } from "@tanstack/react-query";
 import { registerMutateFn } from "@/lib/api/auth.api";
 import { signal } from "@/lib/api";
 import { Loader2 } from "lucide-react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { tanstackGlobalErrorHandler } from "@/helpers";
-import { register } from "module";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -48,11 +46,10 @@ export default function SignUpForm() {
       lastName: "",
     },
   });
-  const router = useRouter();
   const reigsterMutate = useMutation({
     mutationKey: ["sign-up"],
     mutationFn: registerMutateFn,
-    onSuccess: () => router.push("/"),
+    onSuccess: () => window.location.reload(),
     onError: tanstackGlobalErrorHandler,
   });
 

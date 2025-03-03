@@ -1,3 +1,4 @@
+"use server";
 import { FRONTEND_URL, USER_DATA_COOKIE_NAME } from "@/config";
 import axios from "axios";
 import { cookies } from "next/headers";
@@ -21,4 +22,10 @@ export const getUserData = async (): Promise<UserType | null> => {
   } catch (error) {
     return null;
   }
+};
+
+export const clearAuthCookies = async () => {
+  const cookiesStore = await cookies();
+  cookiesStore.delete(USER_DATA_COOKIE_NAME);
+  cookiesStore.delete("auth_token");
 };
