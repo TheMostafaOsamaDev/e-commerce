@@ -7,6 +7,10 @@ export const getUserData = async (): Promise<UserType | null> => {
   const cookiesStore = await cookies();
   const userData = cookiesStore.get(USER_DATA_COOKIE_NAME)?.value;
 
+  if (!userData) {
+    return null;
+  }
+
   try {
     const res = await axios.post(`${FRONTEND_URL}/api/decrypt`, {
       encryptedData: userData,

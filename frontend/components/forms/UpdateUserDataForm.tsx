@@ -12,16 +12,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "../ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { useMutation } from "@tanstack/react-query";
 import { updateProfileMutateFn } from "@/lib/api/auth.api";
 import { tanstackGlobalErrorHandler } from "@/helpers";
+import { toast } from "sonner";
+import { signal } from "@/lib/api";
+import { Loader2 } from "lucide-react";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -46,15 +43,19 @@ export default function UpdateUserDataForm({
     mutationKey: ["update_profile"],
     mutationFn: updateProfileMutateFn,
     onError: tanstackGlobalErrorHandler,
+    onSuccess: () => {
+      toast.success("Profile updated successfully");
+    },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {}
+  function onSubmit(data: z.infer<typeof formSchema>) {
+    updateProfileMutate.mutate({ data, signal });
+  }
 
   return (
     <Card className="w-[350px] xl:w-[450px] mx-auto">
       <CardHeader>
-        <CardTitle className="text-2xl">Sign in</CardTitle>
-        <CardDescription>Sign in to Shoop! to start shopping</CardDescription>
+        <CardTitle className="text-2xl">Update you profile</CardTitle>
       </CardHeader>
 
       <CardContent>
@@ -100,8 +101,18 @@ export default function UpdateUserDataForm({
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full">
-              Update profile
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={updateProfileMutate.isPending}
+            >
+              {updateProfileMutate.isPending ? (
+                <>
+                  <Loader2 className="animate-spin" /> Updating...
+                </>
+              ) : (
+                "Update Profile"
+              )}
             </Button>
           </form>
         </Form>

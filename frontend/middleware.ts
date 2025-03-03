@@ -6,6 +6,7 @@ export default async function middleware(request: NextRequest) {
   const authToken = request.cookies.get("auth_token")?.value;
   const { pathname, origin } = request.nextUrl;
   const isAuthRoute = pathname === "/sign-in" || pathname === "/sign-up";
+  const isProtectedRoute = pathname === "/profile" || pathname === "/cart";
 
   try {
     if (authToken) {
@@ -22,6 +23,8 @@ export default async function middleware(request: NextRequest) {
 
       if (data && isAuthRoute) {
         return NextResponse.redirect(new URL("/", origin));
+      } else if (!data && isProtectedRoute) {
+        return NextResponse.redirect(new URL("/sign-in", origin));
       }
 
       // Encrypt Data
@@ -59,11 +62,19 @@ export default async function middleware(request: NextRequest) {
 
         return response;
       }
+    } else {
+      if (isProtectedRoute) {
+        return NextResponse.redirect(new URL("/sign-in", origin));
+      }
     }
   } catch (error) {
-    console.log("~~~ Middleware error ~~~");
+    let route = pathname;
+
+    if (isProtectedRoute) {
+      route = "/sign-in";
+    }
     // Delete cookies
-    const response = NextResponse.next({});
+    const response = NextResponse.redirect(new URL(pathname, origin));
 
     response.cookies.delete("auth_token");
     response.cookies.delete(USER_DATA_COOKIE_NAME);
@@ -75,5 +86,5 @@ export default async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/", "/sign-up", "/sign-in"],
+  matcher: ["/", "/sign-up", "/sign-in", "/profile", "/cart"],
 };
