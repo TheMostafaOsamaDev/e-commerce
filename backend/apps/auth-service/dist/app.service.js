@@ -116,7 +116,6 @@ let AppService = class AppService {
             const user = decoded;
             if (user) {
                 const id = `${user.email}-${user.authedAt}`;
-                console.log(`ID: ${id}`);
                 const userSession = await session_model_1.Session.findOne({
                     where: { id },
                 });

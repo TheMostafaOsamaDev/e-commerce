@@ -147,8 +147,6 @@ export class AppService {
       if (user) {
         const id = `${user.email}-${user.authedAt}`;
 
-        console.log(`ID: ${id}`);
-
         const userSession = await Session.findOne({
           where: { id },
         });

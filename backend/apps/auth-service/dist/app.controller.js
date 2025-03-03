@@ -16,6 +16,8 @@ const microservices_1 = require("@nestjs/microservices");
 const create_auth_dto_1 = require("./dto/create-auth.dto");
 const sign_in_dto_1 = require("./dto/sign-in.dto");
 const jwt = require("jsonwebtoken");
+const update_auth_dto_1 = require("./dto/update-auth.dto");
+const user_model_1 = require("./models/user.model");
 let AppController = class AppController {
     constructor(appService) {
         this.appService = appService;
@@ -74,6 +76,56 @@ let AppController = class AppController {
         if (decodedUser?.email && decodedUser?.authedAt)
             await this.appService.destroySession(decodedUser.email, decodedUser.authedAt);
     }
+    async updateProfile(data) {
+        const user = await user_model_1.User.findOne({ where: { id: data.id } });
+        const decodedUser = jwt.decode(data.token);
+        if (!user || !data.token || !decodedUser?.authedAt) {
+            throw new microservices_1.RpcException({
+                code: 404,
+                message: 'User not found',
+            });
+        }
+        let hasChanged = false;
+        for (const key of Object.keys(data)) {
+            if (data[key] && data[key] !== 'id' && user[key]) {
+                if (user[key] !== data[key]) {
+                    hasChanged = true;
+                    user[key] = data[key];
+                }
+            }
+        }
+        if (hasChanged) {
+            await user.save();
+            const cachedUser = await this.appService.createSession({
+                userData: {
+                    id: user.id,
+                    email: user.email,
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    isAdmin: user.isAdmin,
+                },
+            });
+            const token = this.appService.generateToken({
+                userData: cachedUser.user,
+                isHashed: false,
+                authedAt: cachedUser.authedAt,
+            });
+            await this.appService.destroySession(user.email, decodedUser.authedAt);
+            return {
+                user: {
+                    id: user.id,
+                    email: user.email,
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                },
+                token,
+                isNew: true,
+            };
+        }
+        return {
+            message: 'No changes made',
+        };
+    }
 };
 exports.AppController = AppController;
 __decorate([
@@ -100,6 +152,12 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], AppController.prototype, "logoutUser", null);
+__decorate([
+    (0, microservices_1.MessagePattern)({ cmd: 'update_profile' }),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [update_auth_dto_1.UpdateAuthDto]),
+    __metadata("design:returntype", Promise)
+], AppController.prototype, "updateProfile", null);
 exports.AppController = AppController = __decorate([
     (0, common_1.Controller)(),
     __metadata("design:paramtypes", [app_service_1.AppService])

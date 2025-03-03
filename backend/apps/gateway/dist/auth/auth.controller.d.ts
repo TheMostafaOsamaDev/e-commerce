@@ -20,9 +20,5 @@ export declare class AuthController {
         token: string | null;
     }>;
     signOut(req: Request, res: Response): Promise<Response<any, Record<string, any>>>;
-    updateAccount(req: Request, data: UpdateAuthDto): Promise<{
-        data: UserType;
-        isNew: boolean;
-        token: string;
-    }>;
+    updateProfile(req: Request, data: UpdateAuthDto): Promise<import("rxjs").Observable<any>>;
 }

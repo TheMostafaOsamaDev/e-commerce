@@ -8,6 +8,9 @@ import {
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { SignInDto } from './dto/sign-in.dto';
 import * as jwt from 'jsonwebtoken';
+import { UpdateAuthDto } from './dto/update-auth.dto';
+import { User, UserType } from './models/user.model';
+import { Session } from './models/session.model';
 
 @Controller()
 export class AppController {
@@ -89,5 +92,66 @@ export class AppController {
         decodedUser.email,
         decodedUser.authedAt,
       );
+  }
+
+  @MessagePattern({ cmd: 'update_profile' })
+  async updateProfile(data: UpdateAuthDto) {
+    const user = await User.findOne({ where: { id: data.id } });
+    const decodedUser = jwt.decode(data.token) as { authedAt: string };
+
+    if (!user || !data.token || !decodedUser?.authedAt) {
+      throw new RpcException({
+        code: 404,
+        message: 'User not found',
+      });
+    }
+
+    let hasChanged = false;
+
+    for (const key of Object.keys(data)) {
+      if (data[key] && data[key] !== 'id' && user[key]) {
+        if (user[key] !== data[key]) {
+          hasChanged = true;
+          user[key] = data[key];
+        }
+      }
+    }
+
+    if (hasChanged) {
+      await user.save();
+
+      const cachedUser = await this.appService.createSession({
+        userData: {
+          id: user.id,
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          isAdmin: user.isAdmin,
+        },
+      });
+
+      const token = this.appService.generateToken({
+        userData: cachedUser.user,
+        isHashed: false,
+        authedAt: cachedUser.authedAt,
+      });
+
+      await this.appService.destroySession(user.email, decodedUser.authedAt);
+
+      return {
+        user: {
+          id: user.id,
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+        },
+        token,
+        isNew: true,
+      };
+    }
+
+    return {
+      message: 'No changes made',
+    };
   }
 }

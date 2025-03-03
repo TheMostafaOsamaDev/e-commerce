@@ -80,13 +80,16 @@ export class AuthController {
   @Patch('update')
   @UseGuards(AuthGuard)
   @UseInterceptors(AuthInterceptor)
-  async updateAccount(@Req() req: Request, @Body() data: UpdateAuthDto) {
+  async updateProfile(@Req() req: Request, @Body() data: UpdateAuthDto) {
     const user = req.verifiedUser;
 
-    // return this.authClient.send({ cmd: 'update_account' }, { user, data });
+    if (!user) {
+      throw new UnauthorizedException('Unauthorized');
+    }
 
-    console.log(user);
-
-    return user;
+    return this.authClient.send(
+      { cmd: 'update_profile' },
+      { ...data, id: user?.data?.id, token: user.token },
+    );
   }
 }

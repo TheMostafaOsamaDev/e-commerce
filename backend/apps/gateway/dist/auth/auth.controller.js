@@ -59,10 +59,12 @@ let AuthController = class AuthController {
         }
         return res.send('Signed out');
     }
-    async updateAccount(req, data) {
+    async updateProfile(req, data) {
         const user = req.verifiedUser;
-        console.log(user);
-        return user;
+        if (!user) {
+            throw new common_1.UnauthorizedException('Unauthorized');
+        }
+        return this.authClient.send({ cmd: 'update_profile' }, { ...data, id: user?.data?.id, token: user.token });
     }
 };
 exports.AuthController = AuthController;
@@ -109,7 +111,7 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, update_auth_dto_1.UpdateAuthDto]),
     __metadata("design:returntype", Promise)
-], AuthController.prototype, "updateAccount", null);
+], AuthController.prototype, "updateProfile", null);
 exports.AuthController = AuthController = __decorate([
     (0, common_1.Controller)('auth'),
     __param(1, (0, common_1.Inject)('AUTH_SERVICE')),
