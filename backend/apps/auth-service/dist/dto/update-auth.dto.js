@@ -13,7 +13,10 @@ exports.UpdateAuthDto = void 0;
 const mapped_types_1 = require("@nestjs/mapped-types");
 const create_auth_dto_1 = require("./create-auth.dto");
 const class_validator_1 = require("class-validator");
-class UpdateAuthDto extends (0, mapped_types_1.PartialType)(create_auth_dto_1.CreateAuthDto) {
+class UpdateAuthDto extends (0, mapped_types_1.PickType)(create_auth_dto_1.CreateAuthDto, [
+    'firstName',
+    'lastName',
+]) {
 }
 exports.UpdateAuthDto = UpdateAuthDto;
 __decorate([

@@ -9,3 +9,8 @@ type SignInType = {
   email: string;
   password: string;
 };
+
+type UpdateProfileType = {
+  firstName: string;
+  lastName: string;
+};

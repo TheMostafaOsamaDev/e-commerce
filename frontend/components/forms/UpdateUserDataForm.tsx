@@ -19,6 +19,9 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
+import { useMutation } from "@tanstack/react-query";
+import { updateProfileMutateFn } from "@/lib/api/auth.api";
+import { tanstackGlobalErrorHandler } from "@/helpers";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -39,6 +42,11 @@ export default function UpdateUserDataForm({
       lastName: updateUserData.lastName,
     },
   });
+  const updateProfileMutate = useMutation({
+    mutationKey: ["update_profile"],
+    mutationFn: updateProfileMutateFn,
+    onError: tanstackGlobalErrorHandler,
+  });
 
   function onSubmit(values: z.infer<typeof formSchema>) {}
 
@@ -55,6 +63,7 @@ export default function UpdateUserDataForm({
             <FormField
               control={form.control}
               name="email"
+              disabled
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Email</FormLabel>

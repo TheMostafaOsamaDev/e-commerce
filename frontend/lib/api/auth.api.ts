@@ -29,3 +29,22 @@ export const signOutMutateFn = async ({ signal }: { signal: AbortSignal }) => {
 
   return res.data;
 };
+
+export const updateProfileMutateFn = async ({
+  data,
+  signal,
+}: {
+  data: UpdateProfileType;
+  signal: AbortSignal;
+}) => {
+  const res = await axiosBase.patch(
+    "/auth/update",
+    {
+      firstName: data.firstName,
+      lastName: data.lastName,
+    },
+    { signal }
+  );
+
+  return res.data;
+};
