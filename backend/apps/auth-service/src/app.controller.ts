@@ -87,6 +87,11 @@ export class AppController {
       authedAt: string;
     };
 
+    console.log({
+      email: decodedUser.email,
+      authedAt: decodedUser.authedAt,
+    });
+
     if (decodedUser?.email && decodedUser?.authedAt)
       await this.appService.destroySession(
         decodedUser.email,

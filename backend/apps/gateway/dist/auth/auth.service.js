@@ -27,7 +27,7 @@ let AuthService = class AuthService {
         });
     }
     async verifyToken(req) {
-        const authToken = req.headers['auth_token'];
+        const authToken = req.headers['auth_token'] || req.cookies['auth_token'];
         if (!authToken) {
             throw new common_1.BadRequestException('No token provided');
         }

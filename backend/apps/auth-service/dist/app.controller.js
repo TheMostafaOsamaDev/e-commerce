@@ -73,6 +73,10 @@ let AppController = class AppController {
             });
         }
         const decodedUser = jwt.decode(token);
+        console.log({
+            email: decodedUser.email,
+            authedAt: decodedUser.authedAt,
+        });
         if (decodedUser?.email && decodedUser?.authedAt)
             await this.appService.destroySession(decodedUser.email, decodedUser.authedAt);
     }
