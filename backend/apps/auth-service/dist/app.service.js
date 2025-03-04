@@ -28,6 +28,7 @@ let AppService = class AppService {
                 firstName: data.firstName,
                 lastName: data.lastName,
                 isAdmin: false,
+                emailVerified: false,
             },
         });
         const userData = user.get({ plain: true });

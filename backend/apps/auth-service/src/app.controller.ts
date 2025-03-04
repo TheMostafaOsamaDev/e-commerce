@@ -9,8 +9,7 @@ import { CreateAuthDto } from './dto/create-auth.dto';
 import { SignInDto } from './dto/sign-in.dto';
 import * as jwt from 'jsonwebtoken';
 import { UpdateAuthDto } from './dto/update-auth.dto';
-import { User, UserType } from './models/user.model';
-import { Session } from './models/session.model';
+import { User } from './models/user.model';
 
 @Controller()
 export class AppController {

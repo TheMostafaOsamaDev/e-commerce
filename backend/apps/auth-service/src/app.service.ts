@@ -21,6 +21,7 @@ export class AppService {
         firstName: data.firstName,
         lastName: data.lastName,
         isAdmin: false,
+        emailVerified: false,
       },
     });
 
