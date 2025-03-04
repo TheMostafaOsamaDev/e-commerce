@@ -7,9 +7,13 @@ export const registerMutateFn = async ({
   data: RegisterType;
   signal: AbortSignal;
 }) => {
-  const res = await axiosBase.post("/auth/sign-up", data, { signal });
+  try {
+    const res = await axiosBase.post("/auth/sign-up", data, { signal });
 
-  return res.data;
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
 };
 
 export const signInMutateFn = async ({
@@ -19,15 +23,23 @@ export const signInMutateFn = async ({
   data: SignInType;
   signal: AbortSignal;
 }) => {
-  const res = await axiosBase.post("/auth/sign-in", data, { signal });
+  try {
+    const res = await axiosBase.post("/auth/sign-in", data, { signal });
 
-  return res.data;
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
 };
 
 export const signOutMutateFn = async ({ signal }: { signal: AbortSignal }) => {
-  const res = await axiosBase.delete("/auth/sign-out", { signal });
+  try {
+    const res = await axiosBase.delete("/auth/sign-out", { signal });
 
-  return res.data;
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
 };
 
 export const updateProfileMutateFn = async ({
@@ -37,14 +49,18 @@ export const updateProfileMutateFn = async ({
   data: UpdateProfileType;
   signal: AbortSignal;
 }) => {
-  const res = await axiosBase.patch(
-    "/auth/update",
-    {
-      firstName: data.firstName,
-      lastName: data.lastName,
-    },
-    { signal }
-  );
+  try {
+    const res = await axiosBase.patch(
+      "/auth/update",
+      {
+        firstName: data.firstName,
+        lastName: data.lastName,
+      },
+      { signal }
+    );
 
-  return res.data;
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
 };

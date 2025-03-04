@@ -28,6 +28,9 @@ import { signal } from "@/lib/api";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { tanstackGlobalErrorHandler } from "@/helpers";
+import { AxiosError } from "axios";
+import { signIn } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -46,14 +49,14 @@ export default function SignUpForm() {
       lastName: "",
     },
   });
+  const router = useRouter();
   const reigsterMutate = useMutation({
     mutationKey: ["sign-up"],
     mutationFn: registerMutateFn,
-    onSuccess: () => window.location.reload(),
     onError: tanstackGlobalErrorHandler,
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     const data = {
       email: values.email,
       password: values.password,
@@ -61,7 +64,21 @@ export default function SignUpForm() {
       lastName: values.lastName,
     };
 
-    reigsterMutate.mutate({ data, signal });
+    try {
+      await reigsterMutate.mutateAsync({ data, signal });
+
+      await signIn.email({
+        email: values.email,
+        password: values.password,
+        fetchOptions: {
+          onSuccess: () => {
+            router.push("/");
+          },
+        },
+      });
+    } catch (error) {
+      tanstackGlobalErrorHandler(error as AxiosError);
+    }
   }
 
   return (

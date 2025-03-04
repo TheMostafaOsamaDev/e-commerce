@@ -6,23 +6,6 @@ import Header from "@/components/header/Header";
 
 const notoSansArabic = localFont({
   src: "./../fonts/Montserrat/Montserrat-Medium.ttf",
-  // src: [
-  //   {
-  //     path: "./../fonts/Montserrat/Montserrat-Regular.ttf",
-  //     weight: "400",
-  //     style: "normal",
-  //   },
-  //   {
-  //     path: "./../fonts/Montserrat/Montserrat-Medium.ttf",
-  //     weight: "700",
-  //     style: "normal",
-  //   },
-  //   {
-  //     path: "./../fonts/Montserrat/Montserrat-Bold.ttf",
-  //     weight: "900",
-  //     style: "normal",
-  //   },
-  // ],
 });
 
 export const metadata: Metadata = {
@@ -37,9 +20,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head>
+      {/* <head>
         <script src="https://unpkg.com/react-scan/dist/auto.global.js" />
-      </head>
+      </head> */}
       <body className={`${notoSansArabic.className} antialiased`}>
         <Providers>
           <Header />
