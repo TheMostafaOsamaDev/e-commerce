@@ -3,6 +3,8 @@ type RegisterType = {
   lastName: string;
   email: string;
   password: string;
+  isAdmin?: boolean;
+  passkey?: string;
 };
 
 type SignInType = {

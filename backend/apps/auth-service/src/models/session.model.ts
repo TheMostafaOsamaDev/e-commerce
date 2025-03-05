@@ -9,7 +9,7 @@ import {
 } from 'sequelize-typescript';
 import { User } from './user.model';
 
-@Table({ tableName: 'sessions' })
+@Table({ tableName: 'backend_sessions' })
 export class Session extends Model {
   @PrimaryKey
   @Column(DataType.STRING)
@@ -17,7 +17,7 @@ export class Session extends Model {
 
   @ForeignKey(() => User)
   @Column({
-    type: DataType.UUID,
+    type: DataType.CHAR(36),
     allowNull: false,
   })
   userId: string;

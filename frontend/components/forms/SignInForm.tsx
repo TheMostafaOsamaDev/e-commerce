@@ -75,7 +75,7 @@ export default function SignUpForm() {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input placeholder="shadcn" {...field} />
+                    <Input placeholder="example@gmail.com" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

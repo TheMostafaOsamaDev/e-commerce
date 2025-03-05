@@ -23,7 +23,7 @@ __decorate([
 __decorate([
     (0, sequelize_typescript_1.ForeignKey)(() => user_model_1.User),
     (0, sequelize_typescript_1.Column)({
-        type: sequelize_typescript_1.DataType.UUID,
+        type: sequelize_typescript_1.DataType.CHAR(36),
         allowNull: false,
     }),
     __metadata("design:type", String)
@@ -55,6 +55,6 @@ __decorate([
     __metadata("design:type", Date)
 ], Session.prototype, "lastAuthedAt", void 0);
 exports.Session = Session = __decorate([
-    (0, sequelize_typescript_1.Table)({ tableName: 'sessions' })
+    (0, sequelize_typescript_1.Table)({ tableName: 'backend_sessions' })
 ], Session);
 //# sourceMappingURL=session.model.js.map

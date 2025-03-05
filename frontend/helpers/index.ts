@@ -1,4 +1,5 @@
 import { AxiosError } from "axios";
+import { ErrorContext } from "better-auth/react";
 
 export const formatAxiosError = (error: AxiosError<any>): any => {
   let finalMessage = "";
@@ -33,4 +34,10 @@ export const tanstackGlobalErrorHandler = (error: AxiosError) => {
   const axiosError = formatAxiosError(error as AxiosError);
 
   toast.error(axiosError || "An error occurred");
+};
+
+export const betterAuthGlobalErrorHandler = (ctx: ErrorContext) => {
+  console.log(`~~~~~~~ ERROR: BETTER_AUTH ~~~~~~~`);
+  console.log(ctx);
+  toast.error(ctx.error?.message || "An error occurred");
 };

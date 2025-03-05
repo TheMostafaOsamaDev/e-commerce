@@ -1,9 +1,8 @@
 "use client";
-import React from "react";
+import React, { useRef } from "react";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -25,18 +24,23 @@ import { Input } from "@/components/ui/input";
 import { useMutation } from "@tanstack/react-query";
 import { registerMutateFn } from "@/lib/api/auth.api";
 import { signal } from "@/lib/api";
-import { Loader2 } from "lucide-react";
+import { CloudCog, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { tanstackGlobalErrorHandler } from "@/helpers";
-import { AxiosError } from "axios";
-import { signIn } from "@/lib/auth-client";
-import { useRouter } from "next/navigation";
+import { Checkbox } from "../ui/checkbox";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSeparator,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
 
 const formSchema = z.object({
   email: z.string().email(),
   password: passwordSchema,
   firstName: z.string().min(2).max(50),
   lastName: z.string().min(2).max(50),
+  isAdmin: z.boolean().optional(),
 });
 
 export default function SignUpForm() {
@@ -49,12 +53,13 @@ export default function SignUpForm() {
       lastName: "",
     },
   });
-  const router = useRouter();
   const reigsterMutate = useMutation({
     mutationKey: ["sign-up"],
     mutationFn: registerMutateFn,
     onError: tanstackGlobalErrorHandler,
+    onSuccess: () => window.location.reload(),
   });
+  const otpRef = useRef<HTMLInputElement>(null);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const data = {
@@ -62,30 +67,16 @@ export default function SignUpForm() {
       password: values.password,
       firstName: values.firstName,
       lastName: values.lastName,
+      isAdmin: false,
     };
 
-    try {
-      await reigsterMutate.mutateAsync({ data, signal });
-
-      await signIn.email({
-        email: values.email,
-        password: values.password,
-        fetchOptions: {
-          onSuccess: () => {
-            router.push("/");
-          },
-        },
-      });
-    } catch (error) {
-      tanstackGlobalErrorHandler(error as AxiosError);
-    }
+    reigsterMutate.mutate({ data, signal });
   }
 
   return (
     <Card className="w-[350px] xl:w-[450px] mx-auto">
       <CardHeader>
         <CardTitle className="text-2xl">Sign up</CardTitle>
-        <CardDescription>Sign up to Shoop! to start shopping</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -125,7 +116,7 @@ export default function SignUpForm() {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input placeholder="shadcn" {...field} />
+                    <Input placeholder="example@gmail.com" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -148,6 +139,63 @@ export default function SignUpForm() {
                   </FormControl>
                   <FormMessage />
                 </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="isAdmin"
+              render={({ field }) => (
+                <>
+                  <FormItem className="flex items-center gap-2">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={(val) => {
+                          field.onChange(val);
+
+                          if (val && otpRef.current) otpRef.current.focus();
+                        }}
+                      />
+                    </FormControl>
+                    <FormLabel className="!m-0">Are you an admin?</FormLabel>
+                    <FormMessage />
+                  </FormItem>
+
+                  {field.value && (
+                    <InputOTP maxLength={6} ref={otpRef}>
+                      <InputOTPGroup className="grid grid-cols-3 w-full">
+                        <InputOTPSlot
+                          index={0}
+                          className="w-full h-[45px] text-xl"
+                        />
+                        <InputOTPSlot
+                          index={1}
+                          className="w-full h-[45px] text-xl"
+                        />
+                        <InputOTPSlot
+                          index={2}
+                          className="w-full h-[45px] text-xl"
+                        />
+                      </InputOTPGroup>
+                      <InputOTPSeparator />
+                      <InputOTPGroup className="grid grid-cols-3 w-full">
+                        <InputOTPSlot
+                          index={3}
+                          className="w-full h-[45px] text-xl"
+                        />
+                        <InputOTPSlot
+                          index={4}
+                          className="w-full h-[45px] text-xl"
+                        />
+                        <InputOTPSlot
+                          index={5}
+                          className="w-full h-[45px] text-xl"
+                        />
+                      </InputOTPGroup>
+                    </InputOTP>
+                  )}
+                </>
               )}
             />
 
