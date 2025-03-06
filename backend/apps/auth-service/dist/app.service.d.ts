@@ -23,6 +23,9 @@ export declare class AppService {
         user: UserType;
         authedAt: string;
     }>;
+    comparePasskey({ passkey }: {
+        passkey: string;
+    }): Promise<true>;
     generateToken({ userData, isHashed, authedAt, }: {
         userData: UserType;
         isHashed: boolean;

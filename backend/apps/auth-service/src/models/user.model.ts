@@ -26,7 +26,7 @@ export class User extends Model<
   @PrimaryKey
   @Default(UUIDV4)
   @Column({
-    type: DataType.UUID,
+    type: DataType.UUIDV4,
     allowNull: false,
   })
   id: string;

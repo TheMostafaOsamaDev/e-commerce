@@ -23,7 +23,7 @@ __decorate([
 __decorate([
     (0, sequelize_typescript_1.ForeignKey)(() => user_model_1.User),
     (0, sequelize_typescript_1.Column)({
-        type: sequelize_typescript_1.DataType.CHAR(36),
+        type: sequelize_typescript_1.DataType.UUIDV4,
         allowNull: false,
     }),
     __metadata("design:type", String)

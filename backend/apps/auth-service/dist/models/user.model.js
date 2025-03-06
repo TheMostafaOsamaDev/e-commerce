@@ -27,7 +27,7 @@ __decorate([
     sequelize_typescript_1.PrimaryKey,
     (0, sequelize_typescript_1.Default)(sequelize_1.UUIDV4),
     (0, sequelize_typescript_1.Column)({
-        type: sequelize_typescript_1.DataType.UUID,
+        type: sequelize_typescript_1.DataType.UUIDV4,
         allowNull: false,
     }),
     __metadata("design:type", String)

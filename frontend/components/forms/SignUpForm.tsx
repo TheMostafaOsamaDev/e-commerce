@@ -67,7 +67,8 @@ export default function SignUpForm() {
       password: values.password,
       firstName: values.firstName,
       lastName: values.lastName,
-      isAdmin: false,
+      isAdmin: values.isAdmin,
+      passkey: values.isAdmin ? otpRef.current?.value : undefined,
     };
 
     reigsterMutate.mutate({ data, signal });

@@ -3,4 +3,6 @@ export declare class CreateAuthDto {
     password: string;
     firstName: string;
     lastName: string;
+    isAdmin?: boolean;
+    passkey?: string;
 }

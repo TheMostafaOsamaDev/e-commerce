@@ -10,6 +10,7 @@ import { SignInDto } from './dto/sign-in.dto';
 import * as jwt from 'jsonwebtoken';
 import { UpdateAuthDto } from './dto/update-auth.dto';
 import { User } from './models/user.model';
+import * as bcrypt from 'bcryptjs';
 
 @Controller()
 export class AppController {
@@ -17,14 +18,31 @@ export class AppController {
 
   @MessagePattern({ cmd: 'create_account' })
   async createAccount(data: CreateAuthDto) {
-    const user = await this.appService.createUser(data);
+    let isAdmin;
+
+    if (data.isAdmin) {
+      if (!data.passkey) {
+        throw new RpcException({
+          message: 'Passkey must be provided',
+          status: 400,
+        });
+      }
+
+      isAdmin = this.appService.comparePasskey({ passkey: data.passkey });
+    }
+
+    const user = await this.appService.createUser({
+      ...data,
+      isAdmin,
+    });
 
     const userData = {
       id: user.id,
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,
-      isAdmin: false,
+      password: data.password,
+      isAdmin,
     };
 
     const cachedUser = await this.appService.createSession({ userData });

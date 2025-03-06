@@ -20,17 +20,28 @@ const session_model_1 = require("./models/session.model");
 let AppService = class AppService {
     constructor() { }
     async createUser(data) {
-        const [user, _] = await user_model_1.User.findOrCreate({
+        const [user, created] = await user_model_1.User.findOrCreate({
             where: { email: data.email },
             defaults: {
                 email: data.email,
                 password: data.password,
                 firstName: data.firstName,
                 lastName: data.lastName,
-                isAdmin: false,
+                isAdmin: data.isAdmin ?? false,
                 emailVerified: false,
             },
         });
+        console.log({
+            created,
+            data,
+            user: user.toJSON(),
+        });
+        if (!created && data.isAdmin !== user.isAdmin) {
+            throw new microservices_1.RpcException({
+                message: "You can't change the role once you created",
+                statusCode: 400,
+            });
+        }
         const userData = user.get({ plain: true });
         return {
             id: userData.id,
@@ -79,6 +90,23 @@ let AppService = class AppService {
             user: userData,
             authedAt,
         };
+    }
+    async comparePasskey({ passkey }) {
+        const PASSKEY = process.env.PASSKEY;
+        if (!PASSKEY) {
+            throw new microservices_1.RpcException({
+                message: 'Sorry an error ocurred in the server',
+                statusCode: 401,
+            });
+        }
+        const isMatched = await bcrypt.compare(passkey, PASSKEY);
+        if (!isMatched) {
+            throw new microservices_1.RpcException({
+                message: 'The passkey you enterd is invalid',
+                statusCode: 401,
+            });
+        }
+        return isMatched;
     }
     generateToken({ userData, isHashed, authedAt, }) {
         const expiresIn = isHashed ? config_1.AUTH_TTL : config_1.TOKEN_TIME;

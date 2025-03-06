@@ -17,7 +17,7 @@ export class Session extends Model {
 
   @ForeignKey(() => User)
   @Column({
-    type: DataType.CHAR(36),
+    type: DataType.UUIDV4,
     allowNull: false,
   })
   userId: string;

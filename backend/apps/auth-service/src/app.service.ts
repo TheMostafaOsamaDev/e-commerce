@@ -13,17 +13,30 @@ export class AppService {
   constructor() {}
 
   async createUser(data: CreateAuthDto) {
-    const [user, _] = await User.findOrCreate({
+    const [user, created] = await User.findOrCreate({
       where: { email: data.email },
       defaults: {
         email: data.email,
         password: data.password,
         firstName: data.firstName,
         lastName: data.lastName,
-        isAdmin: false,
+        isAdmin: data.isAdmin ?? false,
         emailVerified: false,
       },
     });
+
+    console.log({
+      created,
+      data,
+      user: user.toJSON(),
+    });
+
+    if (!created && data.isAdmin !== user.isAdmin) {
+      throw new RpcException({
+        message: "You can't change the role once you created",
+        statusCode: 400,
+      });
+    }
 
     const userData = user.get({ plain: true });
 
@@ -41,7 +54,6 @@ export class AppService {
     });
 
     if (!user) {
-      // throw new NotFoundException('User not found');
       throw new RpcException({
         statusCode: 404,
         message: 'User not found',
@@ -51,7 +63,6 @@ export class AppService {
     const isMatched = await user.comparePassword(signInDto.password);
 
     if (!isMatched) {
-      // throw new BadRequestException('Invalid credentials');
       throw new RpcException({
         statusCode: 400,
         message: 'Invalid credentials',
@@ -86,6 +97,28 @@ export class AppService {
       user: userData,
       authedAt,
     };
+  }
+
+  async comparePasskey({ passkey }: { passkey: string }) {
+    const PASSKEY = process.env.PASSKEY;
+
+    if (!PASSKEY) {
+      throw new RpcException({
+        message: 'Sorry an error ocurred in the server',
+        statusCode: 401,
+      });
+    }
+
+    const isMatched = await bcrypt.compare(passkey, PASSKEY);
+
+    if (!isMatched) {
+      throw new RpcException({
+        message: 'The passkey you enterd is invalid',
+        statusCode: 401,
+      });
+    }
+
+    return isMatched;
   }
 
   generateToken({

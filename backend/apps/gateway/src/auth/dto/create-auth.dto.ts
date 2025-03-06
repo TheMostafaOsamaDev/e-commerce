@@ -4,6 +4,9 @@ import {
   IsStrongPassword,
   MaxLength,
   MinLength,
+  IsBoolean,
+  IsString,
+  IsOptional,
 } from 'class-validator';
 
 export class CreateAuthDto {
@@ -24,4 +27,12 @@ export class CreateAuthDto {
   @MinLength(2)
   @MaxLength(50)
   lastName: string;
+
+  @IsOptional()
+  @IsBoolean()
+  isAdmin?: boolean;
+
+  @IsOptional()
+  @IsString()
+  passkey?: string;
 }
