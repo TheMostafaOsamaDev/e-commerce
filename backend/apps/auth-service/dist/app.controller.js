@@ -23,7 +23,7 @@ let AppController = class AppController {
         this.appService = appService;
     }
     async createAccount(data) {
-        let isAdmin;
+        let isAdmin = false;
         if (data.isAdmin) {
             if (!data.passkey) {
                 throw new microservices_1.RpcException({
@@ -31,7 +31,7 @@ let AppController = class AppController {
                     status: 400,
                 });
             }
-            isAdmin = this.appService.comparePasskey({ passkey: data.passkey });
+            isAdmin = await this.appService.comparePasskey({ passkey: data.passkey });
         }
         const user = await this.appService.createUser({
             ...data,
@@ -144,6 +144,10 @@ let AppController = class AppController {
             message: 'No changes made',
         };
     }
+    async isAdmin(body) {
+        const user = await user_model_1.User.findOne({ where: { email: body.email } });
+        return user?.isAdmin;
+    }
 };
 exports.AppController = AppController;
 __decorate([
@@ -176,6 +180,12 @@ __decorate([
     __metadata("design:paramtypes", [update_auth_dto_1.UpdateAuthDto]),
     __metadata("design:returntype", Promise)
 ], AppController.prototype, "updateProfile", null);
+__decorate([
+    (0, microservices_1.MessagePattern)({ cmd: 'check_if_admin' }),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], AppController.prototype, "isAdmin", null);
 exports.AppController = AppController = __decorate([
     (0, common_1.Controller)(),
     __metadata("design:paramtypes", [app_service_1.AppService])

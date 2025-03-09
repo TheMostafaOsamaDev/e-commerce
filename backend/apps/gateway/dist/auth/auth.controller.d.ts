@@ -21,4 +21,5 @@ export declare class AuthController {
     }>;
     signOut(req: Request, res: Response): Promise<Response<any, Record<string, any>>>;
     updateProfile(req: Request, data: UpdateAuthDto): Promise<import("rxjs").Observable<any>>;
+    isAdmin(req: Request, res: Response): Promise<void>;
 }

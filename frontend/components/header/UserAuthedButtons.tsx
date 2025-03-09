@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { Button } from "../ui/button";
 import Link from "next/link";
 import {
@@ -17,6 +17,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import SignOutButton from "./SignOutButton";
+import AdminDashboardItem from "./AdminDashboardItem";
 
 export default function UserAuthedButtons({
   userData,
@@ -39,6 +40,10 @@ export default function UserAuthedButtons({
               <User /> Profile
             </Link>
           </DropdownMenuItem>
+
+          <Suspense fallback={null}>
+            <AdminDashboardItem />
+          </Suspense>
 
           <DropdownMenuItem>
             <Settings /> Settings

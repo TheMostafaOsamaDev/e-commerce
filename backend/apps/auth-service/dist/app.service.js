@@ -31,11 +31,6 @@ let AppService = class AppService {
                 emailVerified: false,
             },
         });
-        console.log({
-            created,
-            data,
-            user: user.toJSON(),
-        });
         if (!created && data.isAdmin !== user.isAdmin) {
             throw new microservices_1.RpcException({
                 message: "You can't change the role once you created",

@@ -38,4 +38,5 @@ export declare class AppController {
         token?: undefined;
         isNew?: undefined;
     }>;
+    isAdmin(body: Pick<CreateAuthDto, 'email'>): Promise<boolean | undefined>;
 }

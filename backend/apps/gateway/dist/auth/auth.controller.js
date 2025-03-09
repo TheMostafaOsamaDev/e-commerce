@@ -69,6 +69,10 @@ let AuthController = class AuthController {
         }
         return this.authClient.send({ cmd: 'update_profile' }, { ...data, id: user?.data?.id, token: user.token });
     }
+    async isAdmin(req, res) {
+        console.log(req.verifiedUser);
+        res.send('hello world!');
+    }
 };
 exports.AuthController = AuthController;
 __decorate([
@@ -115,6 +119,15 @@ __decorate([
     __metadata("design:paramtypes", [Object, update_auth_dto_1.UpdateAuthDto]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "updateProfile", null);
+__decorate([
+    (0, common_1.Get)('/check-admin'),
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "isAdmin", null);
 exports.AuthController = AuthController = __decorate([
     (0, common_1.Controller)('auth'),
     __param(1, (0, common_1.Inject)('AUTH_SERVICE')),

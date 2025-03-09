@@ -25,12 +25,6 @@ export class AppService {
       },
     });
 
-    console.log({
-      created,
-      data,
-      user: user.toJSON(),
-    });
-
     if (!created && data.isAdmin !== user.isAdmin) {
       throw new RpcException({
         message: "You can't change the role once you created",

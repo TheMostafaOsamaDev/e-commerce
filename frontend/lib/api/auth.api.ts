@@ -64,3 +64,19 @@ export const updateProfileMutateFn = async ({
     throw error;
   }
 };
+
+export const chechIfAdminQueryFn = async ({
+  signal,
+}: {
+  signal: AbortSignal;
+}) => {
+  try {
+    const res = await axiosBase.get("/auth/check-admin", {
+      signal,
+    });
+
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
+};

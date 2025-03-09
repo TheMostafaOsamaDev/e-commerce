@@ -3,6 +3,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   Inject,
   Patch,
   Post,
@@ -13,7 +14,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { ClientProxy } from '@nestjs/microservices';
+import { ClientGrpcProxy, ClientProxy } from '@nestjs/microservices';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { AuthInterceptor } from './auth.Interceptor';
 import { SignInDto } from './dto/sign-in.dto';
@@ -96,5 +97,15 @@ export class AuthController {
       { cmd: 'update_profile' },
       { ...data, id: user?.data?.id, token: user.token },
     );
+  }
+
+  @Get('/check-admin')
+  @UseGuards(AuthGuard)
+  async isAdmin(@Req() req: Request, @Res() res: Response) {
+    console.log(req.verifiedUser);
+
+    // check_if_admin
+
+    res.send('hello world!');
   }
 }

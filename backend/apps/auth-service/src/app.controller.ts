@@ -10,7 +10,6 @@ import { SignInDto } from './dto/sign-in.dto';
 import * as jwt from 'jsonwebtoken';
 import { UpdateAuthDto } from './dto/update-auth.dto';
 import { User } from './models/user.model';
-import * as bcrypt from 'bcryptjs';
 
 @Controller()
 export class AppController {
@@ -18,7 +17,7 @@ export class AppController {
 
   @MessagePattern({ cmd: 'create_account' })
   async createAccount(data: CreateAuthDto) {
-    let isAdmin;
+    let isAdmin = false;
 
     if (data.isAdmin) {
       if (!data.passkey) {
@@ -28,7 +27,7 @@ export class AppController {
         });
       }
 
-      isAdmin = this.appService.comparePasskey({ passkey: data.passkey });
+      isAdmin = await this.appService.comparePasskey({ passkey: data.passkey });
     }
 
     const user = await this.appService.createUser({
@@ -175,5 +174,11 @@ export class AppController {
     return {
       message: 'No changes made',
     };
+  }
+
+  @MessagePattern({ cmd: 'check_if_admin' })
+  async isAdmin(body: Pick<CreateAuthDto, 'email'>) {
+    const user = await User.findOne({ where: { email: body.email } });
+    return user?.isAdmin;
   }
 }
