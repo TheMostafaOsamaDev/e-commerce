@@ -27,6 +27,9 @@ let AuthController = class AuthController {
         this.authClient = authClient;
     }
     async createAccount(data) {
+        if (data.isAdmin && !data.passkey) {
+            throw new common_1.BadRequestException('Admins must provide the passkey');
+        }
         return this.authClient.send({ cmd: 'create_account' }, data);
     }
     async signIn(data) {

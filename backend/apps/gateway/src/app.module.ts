@@ -4,6 +4,8 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { ShopModule } from './shop/shop.module';
+import { APP_FILTER } from '@nestjs/core';
+import { RpcExceptionFilter } from './common/filters/rpc-exception.filter';
 
 @Module({
   imports: [
@@ -14,6 +16,12 @@ import { ShopModule } from './shop/shop.module';
     ShopModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_FILTER,
+      useClass: RpcExceptionFilter,
+    },
+  ],
 })
 export class AppModule {}

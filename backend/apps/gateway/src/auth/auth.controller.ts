@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -30,6 +31,10 @@ export class AuthController {
   @Post('sign-up')
   @UseInterceptors(AuthInterceptor)
   async createAccount(@Body() data: CreateAuthDto) {
+    if (data.isAdmin && !data.passkey) {
+      throw new BadRequestException('Admins must provide the passkey');
+    }
+
     return this.authClient.send({ cmd: 'create_account' }, data);
   }
 
