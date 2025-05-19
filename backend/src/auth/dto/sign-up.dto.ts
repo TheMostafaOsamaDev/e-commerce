@@ -1,0 +1,34 @@
+import { Transform } from 'class-transformer';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsStrongPassword,
+  MaxLength,
+  Matches,
+  MinLength,
+} from 'class-validator';
+
+export class SignUpDto {
+  @IsNotEmpty({ message: 'Email is required' })
+  @IsEmail({}, { message: 'Email is not valid' })
+  @Transform(({ value }) => value?.toLowerCase())
+  email: string;
+  @IsNotEmpty({ message: 'First name is required' })
+  @MinLength(2, { message: 'First name is too short, 2 characters minimum' })
+  @MaxLength(50, { message: 'First name is too long, 50 characters maximum' })
+  @Matches(/^[A-Za-z\s-]+$/, {
+    message: 'First name must contain only letters, spaces, and hyphens',
+  })
+  firstName: string;
+  @IsNotEmpty({ message: 'Last name is required' })
+  @MinLength(2, { message: 'Last name is too short, 2 characters minimum' })
+  @MaxLength(50, { message: 'Last name is too long, 50 characters maximum' })
+  @Matches(/^[A-Za-z\s-]+$/, {
+    message: 'Last name must contain only letters, spaces, and hyphens',
+  })
+  lastName: string;
+
+  @IsNotEmpty({ message: 'Password is required' })
+  @IsStrongPassword({}, { message: 'Password is not strong enough' })
+  password: string;
+}

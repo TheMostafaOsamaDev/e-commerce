@@ -1,0 +1,142 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+
+// Roles Enum
+enum Role {
+  USER
+  ADMIN
+}
+
+model User {
+  id        String   @id @default(cuid())
+  firstName String
+  lastName  String
+  username  String  @unique
+  email     String  @unique
+  role      Role    @default(USER)
+  password  String
+  profilePic String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  favorites UserFavorite[]
+  cart      Cart[]
+  orders    Order[]
+  reviews   Review[]
+}
+
+
+model UserFavorite {
+  id        String   @id @default(cuid())
+  userId    String
+  productId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user     User     @relation(fields: [userId], references: [id])
+  product  Product  @relation(fields: [productId], references: [id])
+}
+
+enum Category {
+  ELECTRONICS
+  FASHION
+  HOME
+  BEAUTY
+  SPORTS
+  TOYS
+  BOOKS
+}
+
+enum SubCategory {
+  SMARTPHONES
+  LAPTOPS
+  TABLETS
+  HEADPHONES
+  CLOTHING
+  FOOTWEAR
+  FURNITURE
+  APPLIANCES
+  SKINCARE
+  MAKEUP
+  FITNESS
+  OUTDOORS
+  ACTION_FIGURES
+  PUZZLES
+  FICTION
+  NON_FICTION
+}
+
+model Product {
+  id          String   @id @default(cuid())
+  title        String
+  description String
+  price       Float
+  category    Category
+  subCategory SubCategory
+  stock      Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  favorites  UserFavorite[]
+  productImages ProductImage[]
+  cart        Cart[]
+  orders      Order[]
+  reviews     Review[]
+}
+
+
+
+model ProductImage {
+  id        String   @id @default(cuid())
+  productId String
+  url       String
+  createdAt DateTime @default(now())  
+  updatedAt DateTime @updatedAt
+  product   Product  @relation(fields: [productId], references: [id])
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  userId    String
+  productId String
+  rating    Int
+  comment   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user     User     @relation(fields: [userId], references: [id])
+  product  Product  @relation(fields: [productId], references: [id])
+}
+
+model Cart {
+  id        String   @id @default(cuid())
+  userId    String
+  productId String
+  quantity  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user     User     @relation(fields: [userId], references: [id])
+  product  Product  @relation(fields: [productId], references: [id])
+}
+
+model Order {
+  id        String   @id @default(cuid())
+  userId    String
+  productId String
+  quantity  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user     User     @relation(fields: [userId], references: [id])
+  product  Product  @relation(fields: [productId], references: [id])
+}
