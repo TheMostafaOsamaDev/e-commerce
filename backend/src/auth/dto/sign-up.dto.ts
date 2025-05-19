@@ -2,7 +2,6 @@ import { Transform } from 'class-transformer';
 import {
   IsEmail,
   IsNotEmpty,
-  IsStrongPassword,
   MaxLength,
   Matches,
   MinLength,
@@ -29,6 +28,6 @@ export class SignUpDto {
   lastName: string;
 
   @IsNotEmpty({ message: 'Password is required' })
-  @IsStrongPassword({}, { message: 'Password is not strong enough' })
+  @MinLength(8, { message: 'Password is too short, 8 characters minimum' })
   password: string;
 }

@@ -7,3 +7,5 @@ type User = {
   createdAt: Date;
   updatedAt: Date;
 };
+
+type BetterAuthResponse = Promise<{ 'set-cookie': string; user: User }>;

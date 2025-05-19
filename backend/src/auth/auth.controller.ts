@@ -1,12 +1,11 @@
-import { Body, Controller, Post, Res } from '@nestjs/common';
+import { Body, Catch, Controller, Post, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignUpDto } from './dto/sign-up.dto';
-import { ApiResponse } from 'src/common/interfaces/response.interface';
 import { SingInDto } from './dto/sign-in.dto';
-import { auth } from 'src/lib/auth';
-import { generateUniqueUsername } from 'src/common/helpers';
 import { Response } from 'express';
+import { BetterAuthExceptionFilter } from 'src/common/filters/better-auth-exception.filter';
 
+@Catch(BetterAuthExceptionFilter)
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -15,8 +14,6 @@ export class AuthController {
   async singUp(@Body() createUserDto: SignUpDto, @Res() res: Response) {
     const data = await this.authService.createUser(createUserDto);
     const setCookie = data['set-cookie'];
-
-    console.log(setCookie);
 
     res.setHeader('Set-Cookie', setCookie);
 
@@ -27,30 +24,26 @@ export class AuthController {
   }
 
   @Post('sign-in')
-  async signIn(@Body() signInUserDto: SingInDto): Promise<ApiResponse<User>> {
-    // const user =
-    //   await this.authService.findUserByEmailAndPassword(signInUserDto);
+  async signIn(@Body() signInUserDto: SingInDto, @Res() res: Response) {
+    const data =
+      await this.authService.findUserByEmailAndPassword(signInUserDto);
 
-    // console.log(user);
+    const setCookie = data['set-cookie'];
 
-    const test = await auth.api.signInEmail({
-      body: {
-        email: signInUserDto.email,
-        password: signInUserDto.password,
+    res.setHeader('Set-Cookie', setCookie);
+    const user = data.user;
+
+    return res.json({
+      message: 'User logged in successfully',
+      data: {
+        id: user.id,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        username: user.username,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
       },
     });
-
-    return {
-      message: 'User signed in successfully',
-      data: {
-        id: '',
-        email: '',
-        firstName: '',
-        lastName: '',
-        username: '',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-    };
   }
 }

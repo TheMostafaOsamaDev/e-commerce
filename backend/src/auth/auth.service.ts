@@ -5,11 +5,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { SignUpDto } from './dto/sign-up.dto';
-import {
-  comparePassword,
-  generateUniqueUsername,
-  hashPassword,
-} from 'src/common/helpers';
+import { generateUniqueUsername } from 'src/common/helpers';
 import { SingInDto } from './dto/sign-in.dto';
 import { auth } from 'src/lib/auth';
 
@@ -17,9 +13,7 @@ import { auth } from 'src/lib/auth';
 export class AuthService {
   constructor(private prisma: PrismaService) {}
 
-  async createUser(
-    signUpDto: SignUpDto,
-  ): Promise<{ 'set-cookie': string; user: User }> {
+  async createUser(signUpDto: SignUpDto): BetterAuthResponse {
     const existingUser = await this.prisma.user.findUnique({
       where: {
         email: signUpDto.email,
@@ -68,7 +62,9 @@ export class AuthService {
     };
   }
 
-  async findUserByEmailAndPassword(signInUserDto: SingInDto): Promise<User> {
+  async findUserByEmailAndPassword(
+    signInUserDto: SingInDto,
+  ): BetterAuthResponse {
     const user = await this.prisma.user.findUnique({
       where: {
         email: signInUserDto.email,
@@ -76,26 +72,33 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new NotFoundException(`Email ${signInUserDto.email} is incorrect`);
+      throw new NotFoundException(`User not found`);
     }
 
-    const isPasswordVaild = await comparePassword({
-      password: signInUserDto.password,
-      hashedPassword: '',
+    const data = await auth.api.signInEmail({
+      body: {
+        email: signInUserDto.email,
+        password: signInUserDto.password,
+      },
+      returnHeaders: true,
     });
+    const setCookie = data.headers.get('set-cookie');
 
-    if (!isPasswordVaild) {
-      throw new NotFoundException('Password is incorrect');
+    if (!setCookie) {
+      throw new UnauthorizedException('Failed to sign in');
     }
 
     return {
-      id: user.id,
-      email: user.email,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      username: user.username,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt,
+      user: {
+        id: user.id,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        username: user.username,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+      },
+      'set-cookie': setCookie,
     };
   }
 }
