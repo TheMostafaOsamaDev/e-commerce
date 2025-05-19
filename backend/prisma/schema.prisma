@@ -10,35 +10,38 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider  = "postgresql"
   url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
 
-
 // Roles Enum
+
 enum Role {
   USER
   ADMIN
 }
 
 model User {
-  id        String   @id @default(cuid())
-  firstName String
-  lastName  String
-  username  String  @unique
-  email     String  @unique
-  role      Role    @default(USER)
-  password  String
-  profilePic String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  favorites UserFavorite[]
-  cart      Cart[]
-  orders    Order[]
-  reviews   Review[]
+  id            String         @id @default(cuid())
+  firstName     String
+  lastName      String
+  username      String         @unique
+  email         String         @unique
+  role          Role           @default(USER)
+  name          String?
+  profilePic    String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  favorites     UserFavorite[]
+  cart          Cart[]
+  orders        Order[]
+  reviews       Review[]
+  emailVerified Boolean
+  sessions      Session[]
+  accounts      Account[]
+  @@map("user")
 }
-
 
 model UserFavorite {
   id        String   @id @default(cuid())
@@ -46,8 +49,8 @@ model UserFavorite {
   productId String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  user     User     @relation(fields: [userId], references: [id])
-  product  Product  @relation(fields: [productId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id])
 }
 
 enum Category {
@@ -80,29 +83,27 @@ enum SubCategory {
 }
 
 model Product {
-  id          String   @id @default(cuid())
-  title        String
-  description String
-  price       Float
-  category    Category
-  subCategory SubCategory
-  stock      Int
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  favorites  UserFavorite[]
+  id            String         @id @default(cuid())
+  title         String
+  description   String
+  price         Float
+  category      Category
+  subCategory   SubCategory
+  stock         Int
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  favorites     UserFavorite[]
   productImages ProductImage[]
-  cart        Cart[]
-  orders      Order[]
-  reviews     Review[]
+  cart          Cart[]
+  orders        Order[]
+  reviews       Review[]
 }
-
-
 
 model ProductImage {
   id        String   @id @default(cuid())
   productId String
   url       String
-  createdAt DateTime @default(now())  
+  createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   product   Product  @relation(fields: [productId], references: [id])
 }
@@ -115,8 +116,8 @@ model Review {
   comment   String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  user     User     @relation(fields: [userId], references: [id])
-  product  Product  @relation(fields: [productId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id])
 }
 
 model Cart {
@@ -126,8 +127,8 @@ model Cart {
   quantity  Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  user     User     @relation(fields: [userId], references: [id])
-  product  Product  @relation(fields: [productId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id])
 }
 
 model Order {
@@ -137,6 +138,51 @@ model Order {
   quantity  Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  user     User     @relation(fields: [userId], references: [id])
-  product  Product  @relation(fields: [productId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id])
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime
+  updatedAt DateTime
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime
+  updatedAt             DateTime
+
+  @@map("account")
+}
+
+model Verification {
+  id         String    @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime?
+  updatedAt  DateTime?
+
+  @@map("verification")
 }
