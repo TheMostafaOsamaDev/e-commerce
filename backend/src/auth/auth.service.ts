@@ -6,7 +6,7 @@ import {
 import { PrismaService } from 'src/prisma/prisma.service';
 import { SignUpDto } from './dto/sign-up.dto';
 import { generateUniqueUsername } from 'src/common/helpers';
-import { SingInDto } from './dto/sign-in.dto';
+import { SignInDto } from './dto/sign-in.dto';
 import { auth } from 'src/lib/auth';
 
 @Injectable()
@@ -63,7 +63,7 @@ export class AuthService {
   }
 
   async findUserByEmailAndPassword(
-    signInUserDto: SingInDto,
+    signInUserDto: SignInDto,
   ): BetterAuthResponse {
     const user = await this.prisma.user.findUnique({
       where: {

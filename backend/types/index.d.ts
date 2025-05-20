@@ -4,6 +4,7 @@ type User = {
   firstName: string;
   lastName: string;
   username: string;
+  role?: 'USER' | 'ADMIN';
   createdAt: Date;
   updatedAt: Date;
 };
