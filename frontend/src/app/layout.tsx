@@ -3,15 +3,12 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import Header from "@/components/header/Header";
+import Providers from "@/components/providers";
 
 // ../font/montserrat/(All Fonts here)
 
 const montserrat = localFont({
   src: [
-    // {
-    //   path: "../font/montserrat/Montserrat-Regular.ttf",
-    //   weight: "400",
-    // },
     {
       path: "../font/montserrat/Montserrat-Medium.ttf",
       weight: "500",
@@ -36,8 +33,10 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${montserrat.className} antialiased`}>
-        <Header />
-        {children}
+        <Providers>
+          <Header />
+          {children}
+        </Providers>
       </body>
     </html>
   );
