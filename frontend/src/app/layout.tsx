@@ -4,6 +4,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import Header from "@/components/header/Header";
 import Providers from "@/components/providers";
+import { Toaster } from "sonner";
 
 // ../font/montserrat/(All Fonts here)
 
@@ -36,6 +37,7 @@ export default function RootLayout({
         <Providers>
           <Header />
           {children}
+          <Toaster />
         </Providers>
       </body>
     </html>

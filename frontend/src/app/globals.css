@@ -6,6 +6,18 @@
 @theme {
   --breakpoint-3xl: 120rem; /* 1920px */
   --breakpoint-4xl: 140rem; /* 2240px */
+  /* Skeleton animation */
+  --animate-skeleton: skeleton 1.2s ease-in-out infinite alternate;
+
+  @keyframes skeleton {
+    0% {
+      background-color: var(--color-secondary);
+    }
+    100% {
+      /* Make it here more transparent */
+      background-color: var(--color-background);
+    }
+  }
 }
 
 @theme inline {

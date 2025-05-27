@@ -10,6 +10,9 @@ import { FormFieldType } from "@/lib/constants";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import useSignUpMutation from "@/hooks/use-signup-mutation";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export default function AuthForm({ type }: { type: "sign-in" | "sign-up" }) {
   const form = useForm<signUpSchemaType>({
@@ -22,9 +25,19 @@ export default function AuthForm({ type }: { type: "sign-in" | "sign-up" }) {
       confirmPassword: "",
     },
   });
+  const router = useRouter();
+  const signUpMutation = useSignUpMutation();
 
   function onSubmit(values: signUpSchemaType) {
-    console.log(values);
+    signUpMutation.mutate(values, {
+      onSuccess: () => {
+        toast.success("Sign up successful!");
+        router.push("/");
+      },
+      onError: (error) => {
+        console.log(error);
+      },
+    });
   }
 
   return (
@@ -41,6 +54,7 @@ export default function AuthForm({ type }: { type: "sign-in" | "sign-up" }) {
               fieldType={FormFieldType.TEXT}
               label="First Name"
               placeholder="Enter your first name"
+              disabled={signUpMutation.isPending}
             />
             <CustomFormField
               control={form.control}
@@ -48,6 +62,7 @@ export default function AuthForm({ type }: { type: "sign-in" | "sign-up" }) {
               fieldType={FormFieldType.TEXT}
               label="Last Name"
               placeholder="Enter your last name"
+              disabled={signUpMutation.isPending}
             />
             <CustomFormField
               control={form.control}
@@ -55,12 +70,14 @@ export default function AuthForm({ type }: { type: "sign-in" | "sign-up" }) {
               fieldType={FormFieldType.EMAIL}
               label="Email"
               placeholder="example@gmail.com"
+              disabled={signUpMutation.isPending}
             />
             <CustomFormField
               control={form.control}
               name="password"
               fieldType={FormFieldType.PASSWORD}
               label="Password"
+              disabled={signUpMutation.isPending}
             />
             <CustomFormField
               control={form.control}
@@ -68,10 +85,15 @@ export default function AuthForm({ type }: { type: "sign-in" | "sign-up" }) {
               fieldType={FormFieldType.PASSWORD}
               label="Confirm Password"
               placeholder="Re-enter your password"
+              disabled={signUpMutation.isPending}
             />
 
             <div className="space-y-2">
-              <Button type="submit" className="w-full cursor-pointer">
+              <Button
+                type="submit"
+                className="w-full cursor-pointer"
+                disabled={signUpMutation.isPending}
+              >
                 Submit
               </Button>
 
