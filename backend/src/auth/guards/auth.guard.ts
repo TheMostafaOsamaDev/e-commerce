@@ -5,22 +5,25 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { fromNodeHeaders } from 'better-auth/node';
-import { Request } from 'express';
 import { auth } from 'src/lib/auth';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req = context.switchToHttp().getRequest();
-
+    const url = req.url;
+    const isAuthRoute =
+      url.includes('/auth/sign-in') || url.includes('/auth/sign-up');
     const data = await auth.api.getSession({
       headers: fromNodeHeaders(req.headers),
     });
 
     const userId = data?.user?.id;
-
-    if (!this.handleAlreadyLoggedIn(req, userId)) {
+    const isAlreadyLoggedIn = this.handleAlreadyLoggedIn(isAuthRoute, userId);
+    if (isAlreadyLoggedIn) {
       throw new ConflictException('Already logged in');
+    } else if (isAuthRoute) {
+      return true;
     }
 
     req.user = data?.user;
@@ -28,15 +31,11 @@ export class AuthGuard implements CanActivate {
     return req.user;
   }
 
-  handleAlreadyLoggedIn(req: Request, userId: string | undefined) {
-    const url = req.url;
-    const isAuthRoute =
-      url.includes('/auth/sign-in') || url.includes('/auth/sign-up');
-
+  handleAlreadyLoggedIn(isAuthRoute: boolean, userId: string | undefined) {
     if (userId && isAuthRoute) {
-      return false;
+      return true;
     }
 
-    return true;
+    return false;
   }
 }

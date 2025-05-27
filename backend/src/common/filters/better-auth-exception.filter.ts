@@ -46,7 +46,6 @@ export class BetterAuthExceptionFilter implements ExceptionFilter {
     response.status(status).json(apiResponse);
   }
 
-  // Helper method to check if the response is already in ApiResponse format
   private isApiResponse(response: any): response is ApiResponse<unknown> {
     return (
       response &&

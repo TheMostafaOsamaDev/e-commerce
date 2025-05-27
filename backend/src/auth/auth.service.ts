@@ -51,6 +51,7 @@ export class AuthService {
     return {
       user: {
         id: user.id,
+        image: user.image || null,
         email: user.email,
         firstName: signUpDto.firstName,
         lastName: signUpDto.lastName,
@@ -91,6 +92,7 @@ export class AuthService {
     return {
       user: {
         id: user.id,
+        image: data.response.user.image || null,
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,

@@ -2,6 +2,7 @@ import {
   Body,
   Catch,
   Controller,
+  Delete,
   Get,
   Post,
   Req,
@@ -16,6 +17,9 @@ import { BetterAuthExceptionFilter } from 'src/common/filters/better-auth-except
 import { AuthGuard } from './guards/auth.guard';
 import { Response } from 'express';
 import { UserRequest } from 'types/express';
+import { fromNodeHeaders } from 'better-auth/node';
+import { auth } from 'src/lib/auth';
+import { SESSION_COOKIE_NAME } from 'src/common/config';
 
 @Catch(BetterAuthExceptionFilter)
 @Controller('auth')
@@ -72,6 +76,7 @@ export class AuthController {
       message: 'User retrieved successfully',
       data: {
         id: user.id,
+        image: user.image || null,
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
@@ -80,5 +85,23 @@ export class AuthController {
         updatedAt: user.updatedAt,
       },
     };
+  }
+
+  @Delete('sign-out')
+  async signOut(@Req() req: UserRequest, @Res() res: Response) {
+    const fromHeaders = fromNodeHeaders(req.headers);
+
+    await auth.api.signOut({
+      headers: fromHeaders,
+    });
+
+    res.setHeader(
+      'Set-Cookie',
+      `${SESSION_COOKIE_NAME}=; HttpOnly; Path=/; Max-Age=0;`,
+    );
+
+    return res.json({
+      message: 'User logged out successfully',
+    });
   }
 }

@@ -1,5 +1,6 @@
 type User = {
   id: string;
+  image?: string | null;
   email: string;
   firstName: string;
   lastName: string;
