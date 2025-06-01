@@ -1,18 +1,10 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
-import { ConfigModule } from '@nestjs/config';
-import { PrismaModule } from './prisma/prisma.module';
-import { AuthModule } from './auth/auth.module';
-import { LoggingInterceptorProvider } from './interceptors/logging.interceptor';
-import { AuthMiddleware } from './auth/auth.middleware';
+import { AppService } from './app.service';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }), PrismaModule, AuthModule],
+  imports: [],
   controllers: [AppController],
-  providers: [LoggingInterceptorProvider],
+  providers: [AppService],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(AuthMiddleware).forRoutes('/api/auth/*path');
-  }
-}
+export class AppModule {}
