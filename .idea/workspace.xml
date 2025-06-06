@@ -48,18 +48,18 @@
     "nodejs_interpreter_path": "/home/mostafa/.config/JetBrains/WebStorm2025.1/node/versions/22.16.0/bin/node",
     "nodejs_package_manager_path": "npm",
     "prettierjs.PrettierConfiguration.Package": "/mnt/data-sda3/my-work-personal/e-commerce/backend/node_modules/prettier",
-    "settings.editor.selected.configurable": "reference.settings.ide.settings.uml",
+    "settings.editor.selected.configurable": "terminal",
     "ts.external.directory.path": "/mnt/data-sda3/my-work-personal/e-commerce/frontend/node_modules/typescript/lib",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/backend/src/application/auth/repositories" />
+      <recent name="$PROJECT_DIR$/backend/src/application/auth" />
       <recent name="$PROJECT_DIR$/backend/src/domain/auth" />
       <recent name="$PROJECT_DIR$/backend/src/domain/auth/interfaces" />
       <recent name="$PROJECT_DIR$/backend/src" />
-      <recent name="$PROJECT_DIR$/backend/src/modules/app" />
-      <recent name="$PROJECT_DIR$/backend/src/modules" />
     </key>
   </component>
   <component name="SharedIndexes">
@@ -88,7 +88,7 @@
       <workItem from="1749130808693" duration="1660000" />
       <workItem from="1749137221212" duration="9623000" />
       <workItem from="1749211427810" duration="157000" />
-      <workItem from="1749211870441" duration="11421000" />
+      <workItem from="1749211870441" duration="27725000" />
     </task>
     <servers />
   </component>

@@ -1,13 +1,13 @@
+import { DataSource } from 'typeorm';
 import {
   DB_CONNECTION_STRING,
-  DB_DATA_SOURCE,
   DB_NAME,
-} from '../config/constants';
-import { DataSource } from 'typeorm';
+  DB_Providers,
+} from '../../common/constants/db.constants';
 
 export const databaseProviders = [
   {
-    provide: DB_DATA_SOURCE,
+    provide: DB_Providers.DATA_SOURCE,
     useFactory: async () => {
       const dataSource = new DataSource({
         type: 'postgres',

@@ -1,29 +1,55 @@
+import { randomBytes } from 'crypto';
+
 export class UserEntity {
-  id: string;
+  id: number;
   email: string;
   firstName: string;
   lastName: string;
+  username: string;
   isAdmin: boolean = false;
   hashPassword: string;
   createdAt: Date;
   updatedAt: Date;
 
   constructor(
-    id: string,
+    id?: number,
+    email?: string,
+    firstName?: string,
+    lastName?: string,
+    isAdmin?: boolean,
+    hashPassword?: string,
+    createdAt?: Date,
+    updatedAt?: Date,
+  ) {
+    this.id = id || Math.floor(Math.random() * 1000000);
+    this.email = email || '';
+    this.firstName = firstName || '';
+    this.lastName = lastName || '';
+    this.isAdmin = isAdmin ?? false;
+    this.hashPassword = hashPassword || '';
+    this.createdAt = createdAt || new Date();
+    this.updatedAt = updatedAt || new Date();
+
+    if (this.firstName && this.lastName) {
+      this.username = this.generateUserName(this.firstName, this.lastName);
+    }
+  }
+
+  async create(
     email: string,
     firstName: string,
     lastName: string,
     isAdmin: boolean = false,
     password: string,
+    hashFn: (plain: string) => Promise<string>,
   ) {
-    this.id = id;
     this.email = email;
     this.firstName = firstName;
     this.lastName = lastName;
     this.isAdmin = isAdmin;
-    this.hashPassword = password;
-    this.createdAt = new Date();
-    this.updatedAt = new Date();
+    this.hashPassword = await hashFn(password);
+
+    this.username = this.generateUserName(firstName, lastName);
   }
 
   async validatePassword(
@@ -33,10 +59,12 @@ export class UserEntity {
     return compareFn(password, this.hashPassword);
   }
 
-  async generateUserName(
-    generateFn: (name: string) => Promise<string>,
-  ): Promise<string> {
-    return generateFn(`${this.firstName} ${this.lastName}`);
+  generateUserName(firstName: string, lastName: string): string {
+    const baseUsername = `${firstName.toLowerCase().replace(/\s+/g, '')}${lastName.toLowerCase().replace(/\s+/g, '')}`;
+
+    const randomSuffix = randomBytes(8).toString('hex'); // Generate a random suffix
+
+    return `${baseUsername}_${randomSuffix}`;
   }
 
   isAdminUser(): boolean {
