@@ -1,5 +1,5 @@
-import { UserEntity } from '../../../domain/auth/user.entity';
-import { SignUpDto } from '../dtos/sign-up.dto';
+import { UserEntity } from '../user.entity';
+import { SignUpDto } from '../../../application/auth/dtos/sign-up.dto';
 
 export interface IUserRepository {
   findUserByEmail(email: string): Promise<UserEntity | null>;
@@ -9,7 +9,6 @@ export interface IUserRepository {
   signInUser(
     email: string,
     password: string,
-    hashFn: (plain: string) => Promise<string>,
     compareFn: (plain: string, hashed: string) => Promise<boolean>,
   ): Promise<UserEntity | null>;
 

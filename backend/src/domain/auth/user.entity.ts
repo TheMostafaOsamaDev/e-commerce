@@ -16,6 +16,7 @@ export class UserEntity {
     email?: string,
     firstName?: string,
     lastName?: string,
+    username?: string,
     isAdmin?: boolean,
     hashPassword?: string,
     createdAt?: Date,
@@ -25,38 +26,29 @@ export class UserEntity {
     this.email = email || '';
     this.firstName = firstName || '';
     this.lastName = lastName || '';
+    this.username = username || '';
     this.isAdmin = isAdmin ?? false;
     this.hashPassword = hashPassword || '';
     this.createdAt = createdAt || new Date();
     this.updatedAt = updatedAt || new Date();
 
-    if (this.firstName && this.lastName) {
+    if (this.firstName && this.lastName && !this.username) {
       this.username = this.generateUserName(this.firstName, this.lastName);
     }
   }
 
-  async create(
+  create(
     email: string,
     firstName: string,
     lastName: string,
     isAdmin: boolean = false,
     password: string,
-    hashFn: (plain: string) => Promise<string>,
   ) {
     this.email = email;
     this.firstName = firstName;
     this.lastName = lastName;
     this.isAdmin = isAdmin;
-    this.hashPassword = await hashFn(password);
-
-    this.username = this.generateUserName(firstName, lastName);
-  }
-
-  async validatePassword(
-    password: string,
-    compareFn: (plain: string, hashed: string) => Promise<boolean>,
-  ) {
-    return compareFn(password, this.hashPassword);
+    this.hashPassword = password;
   }
 
   generateUserName(firstName: string, lastName: string): string {

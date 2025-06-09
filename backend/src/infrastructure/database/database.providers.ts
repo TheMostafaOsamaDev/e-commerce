@@ -3,7 +3,7 @@ import {
   DB_CONNECTION_STRING,
   DB_NAME,
   DB_Providers,
-} from '../../common/constants/db.constants';
+} from '../../common/constants/providers.constants';
 
 export const databaseProviders = [
   {

@@ -47,3 +47,38 @@ export const SignUpApiResponses: ApiResponseOptions[] = [
     },
   },
 ];
+
+export const SignInApiResponses: ApiResponseOptions[] = [
+  {
+    status: 200,
+    description: 'Sign in successful',
+    headers: {
+      'Set-Cookie': {
+        description: 'Set cookie with user session',
+        schema: {
+          type: 'string',
+          example: 'session.id=abc123; HttpOnly; Secure; SameSite=Strict',
+        },
+      },
+    },
+  },
+  {
+    status: 401,
+    description: 'Unauthorized - Invalid credentials',
+    content: {
+      'application/json': {
+        schema: {
+          type: 'object',
+          properties: {
+            statusCode: { type: 'number', example: 401 },
+            message: {
+              type: 'string',
+              example: 'User email or password may be wrong',
+            },
+            error: { type: 'string', example: 'Unauthorized' },
+          },
+        },
+      },
+    },
+  },
+];

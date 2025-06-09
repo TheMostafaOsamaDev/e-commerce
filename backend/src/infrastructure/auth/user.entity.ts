@@ -15,7 +15,7 @@ export class User {
   lastName: string;
 
   @Column({ length: 255, unique: true })
-  userName: string;
+  username: string;
 
   @Column({ default: false })
   isAdmin: boolean;

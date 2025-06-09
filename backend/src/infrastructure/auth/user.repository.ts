@@ -1,9 +1,9 @@
-import { IUserRepository } from '../../application/auth/repositories/user.repository.interface';
+import { IUserRepository } from '../../domain/auth/interfaces/user.repository.interface';
 import { DataSource, Repository } from 'typeorm';
 import { User } from './user.entity';
 import { UserEntity } from '../../domain/auth/user.entity';
 import { toUserEntity } from './mappers/user.entity.mapper';
-import { ConflictException, NotFoundException } from '@nestjs/common';
+import { ConflictException } from '@nestjs/common';
 
 export class UserRepository implements IUserRepository {
   private readonly repo: Repository<User>;
@@ -34,15 +34,7 @@ export class UserRepository implements IUserRepository {
 
     const userEntity = toUserEntity(user);
 
-    const isValidPassword = await userEntity.validatePassword(
-      password,
-      async (plain, hashed) => {
-        const bcrypt = require('bcryptjs');
-        return bcrypt.compare(plain, hashed);
-      },
-    );
-
-    return isValidPassword ? userEntity : null;
+    return userEntity;
   }
 
   async createUser(user: UserEntity): Promise<UserEntity> {
@@ -55,6 +47,7 @@ export class UserRepository implements IUserRepository {
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,
+      username: user.username,
       isAdmin: user.isAdmin,
       hashPassword: user.hashPassword, // Use the correct property name
     });

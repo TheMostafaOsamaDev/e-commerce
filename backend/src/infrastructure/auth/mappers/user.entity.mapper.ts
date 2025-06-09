@@ -7,6 +7,7 @@ export function toUserEntity(user: User): UserEntity {
     user.email,
     user.firstName,
     user.lastName,
+    user.username,
     user.isAdmin,
     user.hashPassword,
     user.createdAt,
