@@ -1,4 +1,4 @@
-import { Inject } from '@nestjs/common';
+import { BadRequestException, Inject } from '@nestjs/common';
 import {
   PasswordHasherProvider,
   DB_Providers,
@@ -20,7 +20,7 @@ export class SignInUseCase {
     const user = await this.userRepository.findUserByEmail(dto.email);
 
     if (!user) {
-      return null; // User not found
+      throw new BadRequestException('Email or password is wrong');
     }
 
     const userEntity = new UserEntity(user);
@@ -31,7 +31,7 @@ export class SignInUseCase {
     );
 
     if (!isValidPassword) {
-      return null; // Invalid password
+      throw new BadRequestException('Email or password is wrong');
     }
 
     return userEntity; // Return the user entity if credentials are valid

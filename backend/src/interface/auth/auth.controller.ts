@@ -21,5 +21,7 @@ export class AuthController {
 
   @Post(AuthRoutes.SIGN_IN)
   @SwaggerApiDecorator(SignInApiResponses)
-  async signIn(@Body() signInDto: SignInDto) {}
+  async signIn(@Body() signInDto: SignInDto) {
+    return this.authService.signIn(signInDto);
+  }
 }
