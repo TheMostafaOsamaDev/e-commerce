@@ -23,17 +23,7 @@ export class SignInUseCase {
       return null; // User not found
     }
 
-    const userEntity = new UserEntity(
-      user.id,
-      user.email,
-      user.firstName,
-      user.lastName,
-      user.username,
-      user.isAdmin,
-      user.hashPassword,
-      user.createdAt,
-      user.updatedAt,
-    );
+    const userEntity = new UserEntity(user);
 
     const isValidPassword = await this.passwordHasher.compare(
       dto.password,

@@ -1,5 +1,17 @@
 import { randomBytes } from 'crypto';
 
+export interface UserEntityProps {
+  id?: number;
+  email?: string;
+  firstName?: string;
+  lastName?: string;
+  username?: string;
+  isAdmin?: boolean;
+  hashPassword?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
 export class UserEntity {
   id: number;
   email: string;
@@ -11,17 +23,17 @@ export class UserEntity {
   createdAt: Date;
   updatedAt: Date;
 
-  constructor(
-    id?: number,
-    email?: string,
-    firstName?: string,
-    lastName?: string,
-    username?: string,
-    isAdmin?: boolean,
-    hashPassword?: string,
-    createdAt?: Date,
-    updatedAt?: Date,
-  ) {
+  constructor({
+    id,
+    email,
+    firstName,
+    lastName,
+    username,
+    isAdmin,
+    hashPassword,
+    createdAt,
+    updatedAt,
+  }: UserEntityProps = {}) {
     this.id = id || Math.floor(Math.random() * 1000000);
     this.email = email || '';
     this.firstName = firstName || '';
@@ -33,7 +45,7 @@ export class UserEntity {
     this.updatedAt = updatedAt || new Date();
 
     if (this.firstName && this.lastName && !this.username) {
-      this.username = this.generateUserName(this.firstName, this.lastName);
+      this.username = this.setUsername(this.firstName, this.lastName);
     }
   }
 
@@ -51,7 +63,7 @@ export class UserEntity {
     this.hashPassword = password;
   }
 
-  generateUserName(firstName: string, lastName: string): string {
+  setUsername(firstName: string, lastName: string): string {
     const baseUsername = `${firstName.toLowerCase().replace(/\s+/g, '')}${lastName.toLowerCase().replace(/\s+/g, '')}`;
 
     const randomSuffix = randomBytes(8).toString('hex'); // Generate a random suffix

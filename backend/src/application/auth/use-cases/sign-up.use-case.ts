@@ -26,8 +26,13 @@ export class SignUpUseCase {
 
     const hashedPassword = await this.passwordHasher.hash(dto.password);
 
-    const user = new UserEntity();
-    user.create(dto.email, dto.firstName, dto.lastName, false, hashedPassword);
+    const user = new UserEntity({
+      email: dto.email,
+      firstName: dto.firstName,
+      lastName: dto.lastName,
+      hashPassword: hashedPassword,
+      isAdmin: false,
+    });
 
     const createdUser = await this.userRepository.createUser(user);
 
