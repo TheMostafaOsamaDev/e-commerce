@@ -1,17 +1,17 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { SignUpUseCase } from '../../application/auth/use-cases/sign-up.use-case';
 import { SignUpDto } from '../../application/auth/dtos/sign-up.dto';
-import { PasswordHasherProvider } from '../../common/constants/providers.constants';
-import { IPasswordHasher } from '../../domain/auth/interfaces/password-hasher.interface';
 import { SignInUseCase } from '../../application/auth/use-cases/sign-in.use-case';
 import { SignInDto } from '../../application/auth/dtos/sign-in.dto';
+import { JwtService } from '../../infrastructure/auth/jwt/jwt.service';
+import { UserEntity } from '../../domain/auth/user.entity';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly signUpUseCase: SignUpUseCase,
     private readonly signInUseCase: SignInUseCase,
-    @Inject(PasswordHasherProvider) passwordHasher: IPasswordHasher,
+    private readonly jwtService: JwtService,
   ) {}
 
   signUp(dto: SignUpDto) {
@@ -20,5 +20,9 @@ export class AuthService {
 
   async signIn(dto: SignInDto) {
     return this.signInUseCase.execute(dto);
+  }
+
+  generateToken(user: UserEntity) {
+    return this.jwtService.generate(user);
   }
 }

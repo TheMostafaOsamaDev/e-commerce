@@ -3,6 +3,7 @@ export enum AuthRoutes {
   ROOT = '/auth',
   SIGN_IN = '/sing-in',
   SIGN_UP = '/sign-up',
+  PROFILE = '/profile',
   SIGN_OUT = '/sign-out',
   FORGOT_PASSWORD = '/forgot-password',
   REFRESH_TOKEN = '/refresh-token',

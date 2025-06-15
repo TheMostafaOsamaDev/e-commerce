@@ -10,3 +10,5 @@ export const DB_NAME = 'shoop_e_commerce';
 
 // Other Providers
 export const PasswordHasherProvider = 'PASSWORD_HASHER_PROVIDER';
+
+export const JWT_TOKEN_SERVICE = 'JWT_TOKEN_SERVICE';
