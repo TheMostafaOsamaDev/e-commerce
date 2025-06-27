@@ -1,8 +1,8 @@
-import { IUserRepository } from '../../domain/auth/interfaces/user.repository.interface';
+import { IUserRepository } from '../../../domain/auth/interfaces/user.repository.interface';
 import { DataSource, Repository } from 'typeorm';
 import { User } from './user.entity';
-import { UserEntity } from '../../domain/auth/user.entity';
-import { toUserEntity } from './mappers/user.entity.mapper';
+import { UserEntity } from '../../../domain/auth/user.entity';
+import { toUserEntity } from '../mappers/user.entity.mapper';
 import { ConflictException } from '@nestjs/common';
 
 export class UserRepository implements IUserRepository {

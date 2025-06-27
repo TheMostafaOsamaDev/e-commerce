@@ -5,12 +5,14 @@ import { SignInUseCase } from '../../application/auth/use-cases/sign-in.use-case
 import { SignInDto } from '../../application/auth/dtos/sign-in.dto';
 import { JwtService } from '../../infrastructure/auth/jwt/jwt.service';
 import { UserEntity } from '../../domain/auth/user.entity';
+import { SaveRefreshTokenUseCase } from '../../application/auth/use-cases/save-refresh-token.use-case';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly signUpUseCase: SignUpUseCase,
     private readonly signInUseCase: SignInUseCase,
+    private readonly saveRefreshTokenUseCase: SaveRefreshTokenUseCase,
     private readonly jwtService: JwtService,
   ) {}
 
@@ -22,7 +24,20 @@ export class AuthService {
     return this.signInUseCase.execute(dto);
   }
 
-  generateToken(user: UserEntity) {
-    return this.jwtService.generate(user);
+  generateTokens(ipAddress, user: UserEntity) {
+    const accessToken = this.jwtService.signAccessToken(user);
+    const refreshToken = this.jwtService.signRefreshToken(user);
+
+    const refreshTokenEntity = this.saveRefreshTokenUseCase.execute({
+      userId: user.id,
+      token: refreshToken,
+      ipAddress,
+    });
+
+    return {
+      accessToken,
+      refreshToken,
+      refreshTokenEntity,
+    };
   }
 }

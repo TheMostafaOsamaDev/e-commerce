@@ -1,7 +1,9 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { IUserEntity } from '../../../domain/auth/interfaces/user.entity.interface';
+import { RefreshToken } from '../refresh-token/refresh-token.entity';
 
 @Entity('user')
-export class User {
+export class User implements IUserEntity {
   @PrimaryGeneratedColumn('increment')
   id: number;
 
@@ -32,4 +34,8 @@ export class User {
     onUpdate: 'CURRENT_TIMESTAMP',
   })
   updatedAt: Date;
+
+  // Relations
+  @OneToMany(() => RefreshToken, (refreshToken) => refreshToken.user)
+  refreshTokens: RefreshToken[];
 }

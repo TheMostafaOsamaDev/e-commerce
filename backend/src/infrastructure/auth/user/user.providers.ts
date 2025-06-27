@@ -1,4 +1,4 @@
-import { DB_Providers } from '../../common/constants/providers.constants';
+import { DB_Providers } from '../../../common/constants/providers.constants';
 import { DataSource } from 'typeorm';
 import { User } from './user.entity';
 import { UserRepository } from './user.repository';
