@@ -51,18 +51,18 @@ export class AuthController {
     @Req() req: Request,
   ) {
     const user = await this.authService.signIn(signInDto);
-    const ipAddress = req.ip;
+    const ipAddress = req.ip === '::1' ? '127.0.0.1' : req.ip;
 
     if (!ipAddress)
       throw new BadRequestException('Unable to determine IP address');
 
-    const { accessToken, refreshToken } = this.authService.generateTokens(
+    const { accessToken, refreshToken } = await this.authService.generateTokens(
       ipAddress,
       user,
     );
 
     res.cookie(JWT_COOKIE_NAME, accessToken, {
-      maxAge: JWT_COOKIE_EXPIRATION,
+      // maxAge: 5 * 1000, // 5 seconds = 5 * 1000,
       httpOnly: true,
     });
 
@@ -84,6 +84,6 @@ export class AuthController {
   @Get(AuthRoutes.PROFILE)
   @UseGuards(JwtAuthGuard)
   getProfile(@Req() request: Request) {
-    return {}; // Assuming the user is attached to the request by the JwtStrategy
+    return request.user; // Assuming the user is attached to the request by the JwtStrategy
   }
 }

@@ -10,6 +10,11 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="ChangesViewManager">
+    <option name="groupingKeys">
+      <option value="directory" />
+    </option>
+  </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
@@ -99,7 +104,7 @@
       <workItem from="1749975218200" duration="60000" />
       <workItem from="1749975297366" duration="11512000" />
       <workItem from="1750952006374" duration="2678000" />
-      <workItem from="1751029162059" duration="12584000" />
+      <workItem from="1751029162059" duration="21625000" />
     </task>
     <servers />
   </component>

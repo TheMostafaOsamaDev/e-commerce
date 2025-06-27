@@ -6,7 +6,7 @@ export interface IRefreshTokenRepository {
     token: string,
     expiresAt: Date,
     ipAddress: string,
-  ): Promise<void>;
+  ): Promise<IRefreshTokenEntity>;
 
   findByToken(token: string): Promise<IRefreshTokenEntity | null>;
 

@@ -12,12 +12,14 @@ import { PassportModule } from '@nestjs/passport';
 import { LocalStrategy } from '../../infrastructure/auth/strategies/local.strategy';
 import { refreshTokenProviders } from '../../infrastructure/auth/refresh-token/refresh-token.providers';
 import { SaveRefreshTokenUseCase } from '../../application/auth/use-cases/save-refresh-token.use-case';
+import { RefreshTokenModule } from '../../infrastructure/auth/refresh-token/refresh-token.module';
 
 @Module({
   imports: [
     DatabaseModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule,
+    RefreshTokenModule,
   ],
   controllers: [AuthController],
   providers: [
@@ -29,7 +31,6 @@ import { SaveRefreshTokenUseCase } from '../../application/auth/use-cases/save-r
     JwtStrategy,
     ...userProviders,
     ...bcryptHasherProviders,
-    ...refreshTokenProviders,
   ],
 })
 export class AuthModule {}

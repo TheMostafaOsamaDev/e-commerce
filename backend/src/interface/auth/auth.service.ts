@@ -24,11 +24,11 @@ export class AuthService {
     return this.signInUseCase.execute(dto);
   }
 
-  generateTokens(ipAddress, user: UserEntity) {
+  async generateTokens(ipAddress, user: UserEntity) {
     const accessToken = this.jwtService.signAccessToken(user);
     const refreshToken = this.jwtService.signRefreshToken(user);
 
-    const refreshTokenEntity = this.saveRefreshTokenUseCase.execute({
+    const refreshTokenEntity = await this.saveRefreshTokenUseCase.execute({
       userId: user.id,
       token: refreshToken,
       ipAddress,

@@ -1,4 +1,4 @@
-import { IRefreshTokenRepository } from '../../../domain/auth/interfaces/refresh-token.repository';
+import { IRefreshTokenRepository } from '../../../domain/auth/interfaces/refresh-token.repository.interface';
 import { DataSource, Repository } from 'typeorm';
 import { User } from '../user/user.entity';
 import { RefreshToken } from './refresh-token.entity';
@@ -16,13 +16,18 @@ export class RefreshTokenRepository implements IRefreshTokenRepository {
     token: string,
     expiresAt: Date,
     ipAddress: string,
-  ): Promise<void> {
-    this.repo.create({
+  ): Promise<IRefreshTokenEntity> {
+    console.log(
+      `Creating refresh token for userId: ${userId}, token: ${token}, expiresAt: ${expiresAt}, ipAddress: ${ipAddress}`,
+    );
+    const refreshToken = this.repo.create({
       token,
       expiresAt,
-      ipAddress,
       userId,
+      ipAddress,
     });
+
+    return await this.repo.save(refreshToken);
   }
 
   async revokeToken(token: string): Promise<void> {
